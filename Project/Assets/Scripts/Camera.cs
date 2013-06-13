@@ -30,6 +30,9 @@ public class Camera : MonoBehaviour {
 			else if (Time.timeScale == 1){
 				Time.timeScale = 0;
 				currentButton = playButton;
+				if(GUI.Button(new Rect(Screen.width-pauseButton.width,15,75,50),"Home")){
+					Application.LoadLevel("StartScreen");
+				}
 			}
 		}
 		
