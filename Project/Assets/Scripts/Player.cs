@@ -114,10 +114,6 @@ public class Player : MonoBehaviour {
 		
 	}
 	
-	void OnGUI()
-	{
-		GUI.Button(new Rect(0,0,100,50),"Meow");
-		
-	}
+	
 	
 }
