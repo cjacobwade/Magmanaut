@@ -1,10 +1,12 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Camera.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\TitleScreenTest.cs">
     <Files>
-      <File FileName="Assets\Scripts\Player.cs" Line="109" Column="19" />
+      <File FileName="..\..\BaconJam2013\Project\Assets\Scripts\playerControl.cs" Line="28" Column="3" />
+      <File FileName="Assets\Scripts\Player.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Cycle.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Camera.cs" Line="9" Column="52" />
+      <File FileName="Assets\Scripts\TitleScreenTest.cs" Line="20" Column="99" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
