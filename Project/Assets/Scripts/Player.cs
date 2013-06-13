@@ -13,7 +13,6 @@ public class Player : MonoBehaviour {
 		public int jumpSpeed;
 		public int doubleSpeed;//double jump speed
 		public int gravitySpeed;
-		bool isJumping = true;
 		bool isDouble = false;//double jumping?
 	
 	//Animation
@@ -60,11 +59,9 @@ public class Player : MonoBehaviour {
 	void Update () 
 	{
 		Movement();
-		//if(Input.GetTouch(0).tapCount>0)
-			//transform.Translate(new Vector3(0,moveSpeed,0)*Time.deltaTime);
+		
 		if(Input.GetKey(KeyCode.R))
 			Application.LoadLevel(Application.loadedLevel);
-		
 	}
 	
 	void Movement()
@@ -81,13 +78,13 @@ public class Player : MonoBehaviour {
 //		else
 //			velocity.z = 0;
 		
-		//Gravity
+		//In the air
 		if(!controller.isGrounded)
 		{
 			velocity.y += gravitySpeed*Time.deltaTime;
 			if(!isDouble)
 			{
-				if(Input.GetKeyDown(KeyCode.Space))
+				if(Input.GetKeyDown(KeyCode.Space)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
 				{
 					isDouble = true;
 					velocity.y = 0;
@@ -96,18 +93,25 @@ public class Player : MonoBehaviour {
 			}
 		}
 		
-		//Jumping
+		//On the ground
 		if(controller.isGrounded)	
 		{
 			isDouble = false;
-			if(Input.GetKeyDown(KeyCode.Space))
+			if(Input.GetKeyDown(KeyCode.Space)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
 			{
 				velocity.y = 0;
 				velocity.y += jumpSpeed;
 			}
 		}
 		
+		//Check side collisions
+		if((controller.collisionFlags & CollisionFlags.Sides) != 0)
+			velocity.z = 0;
 		
-		controller.Move(velocity*Time.deltaTime);
+		controller.Move(velocity*Time.deltaTime);//Always be moving at current velocity
+		if(transform.position.y < -3)//If fell off, restart level
+			Application.LoadLevel(Application.loadedLevel);
+		
 	}
+	
 }
