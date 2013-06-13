@@ -57,7 +57,7 @@ public class CharacterController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		if(Input.GetTouch())
+		if(Input.GetTouch(0).tapCount>0)
 			transform.Translate(new Vector3(0,moveSpeed,0)*Time.deltaTime);
 		
 		
