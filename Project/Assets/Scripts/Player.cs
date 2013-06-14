@@ -3,6 +3,10 @@ using System.Collections;
 
 public class Player : MonoBehaviour {
 	
+	//Other
+	
+		public GameObject mover;
+	
 	//Movement
 	
 		public int moveSpeed;
@@ -10,31 +14,35 @@ public class Player : MonoBehaviour {
 				
 	//Jumping
 	
+		public LayerMask platLayer;//which layer are the platforms on
 		public int jumpSpeed;
 		public int doubleSpeed;//double jump speed
 		public int gravitySpeed;
 		bool isDouble = false;//double jumping?
 	
 	//Animation
-	
-		//Running
-		//Jumping
-		//Double Jumping
-		//Deflecting
-		//Special Abilities
-		//Getting hit
-		//Dying
+		
+		//Animations
+			//Running
+			//Jumping
+			//Double Jumping
+			//Deflecting
+			//Special Abilities
+			//Getting hit
+			//Dying
+			//Clambering up ledges
 	
 	//Sound
 	
 		public AudioClip[] soundIndex;
-		//Steps
-		//Jump
-		//Double Jump
-		//Deflecting
-		//Special Abilities
-		//Getting hit/Losing health
-		//Dying
+		//Sounds
+			//Steps
+			//Jump
+			//Double Jump
+			//Deflecting
+			//Special Abilities
+			//Getting hit/Losing health
+			//Dying
 	
 	//Health
 	
@@ -52,68 +60,67 @@ public class Player : MonoBehaviour {
 	void Start () 
 	{
 		currentHealth = maxHealth;
-		
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
 		Movement();
+		SideCheck();
 		
 		if(Input.GetKey(KeyCode.R))
 			Application.LoadLevel(Application.loadedLevel);
 	}
 	
-	void Movement()
+	void Movement ()
 	{
-		CharacterController controller = GetComponent<CharacterController>();
-		
-		//Move
-//		if(Input.GetKey(KeyCode.A))
-//			velocity.z = moveSpeed;
-//		
-//		else if(Input.GetKey(KeyCode.D))
-//			velocity.z = -moveSpeed;
-//		
-//		else
-//			velocity.z = 0;
-		
-		//In the air
-		if(!controller.isGrounded)
-		{
-			velocity.y += gravitySpeed*Time.deltaTime;
-			if(!isDouble)
-			{
-				if(Input.GetKeyDown(KeyCode.Space)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
-				{
-					isDouble = true;
-					velocity.y = 0;
-					velocity.y += doubleSpeed;
-				}
-			}
-		}
+		CharacterController controller = GetComponent<CharacterController>();//Need this so we can reference the character controller component
 		
 		//On the ground
-		if(controller.isGrounded)	
-		{
-			isDouble = false;
-			if(Input.GetKeyDown(KeyCode.Space)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
-			{
-				velocity.y = 0;
-				velocity.y += jumpSpeed;
-			}
-		}
+			if(controller.isGrounded)	
+				OnGround();
 		
-		//Check side collisions
-		if((controller.collisionFlags & CollisionFlags.Sides) != 0)
-			velocity.z = 0;
+		//In the air
+			if(!controller.isGrounded)
+				InAir();
 		
-		controller.Move(velocity*Time.deltaTime);//Always be moving at current velocity
-		if(transform.position.y < -3)//If fell off, restart level
+		controller.Move(velocity*Time.deltaTime);//Always moving at current velocity
+		if(transform.position.y < -3)//If fell off, restart level #Need to modularize in case levels would let you fall far or go higher up
 			Application.LoadLevel(Application.loadedLevel);
-		
 	}
 	
+	void OnGround ()
+	{
+		isDouble = false;
+		if(Input.GetKeyDown(KeyCode.Space)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
+		{
+			velocity.y = 0;
+			velocity.y += jumpSpeed;
+		}
+	}
 	
+	void InAir ()
+	{
+		velocity.y += gravitySpeed*Time.deltaTime;
+		if(!isDouble)
+		{
+			if(Input.GetKeyDown(KeyCode.Space)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
+			{
+				isDouble = true;
+				velocity.y = 0;
+				velocity.y += doubleSpeed;
+			}
+		}
+	}
 	
+	void SideCheck ()
+	{
+		//Check for collisions against platform sides
+			//Debug.DrawRay(transform.position,-transform.forward,Color.red,.5f);//used to draw show the raycast's path
+			if (Physics.Raycast(new Vector3(transform.position.x,transform.position.y-.5f,transform.position.z),-transform.forward,.5f,platLayer)||Physics.Raycast(new Vector3(transform.position.x,transform.position.y+.5f,transform.position.z),-transform.forward,.5f,platLayer))
+			{
+				isDouble = true;
+				mover.GetComponent<Cycle>().platMove = false;
+			}
+	}	
 }
