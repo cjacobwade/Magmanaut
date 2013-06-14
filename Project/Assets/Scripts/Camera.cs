@@ -31,7 +31,7 @@ public class Camera : MonoBehaviour {
 		GUI.skin = transparentBorder;			
 		if (Time.timeScale == 0){
 			GUI.DrawTexture(new Rect(Screen.width-190,0,196,Screen.height),menuBG);
-			if(GUI.Button(new Rect(xpos,425,128,128),HomeIcon)){
+			if(GUI.Button(new Rect(xpos,Screen.height - 145,128,128),HomeIcon)){
 				Application.LoadLevel("StartScreen");
 			}
 		}
