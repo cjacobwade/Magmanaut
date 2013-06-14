@@ -12,6 +12,7 @@ public class TitleScreenTest : MonoBehaviour {
 	public int changeSizeY_button;
 	public int changeSizeX_title;
 	public int changeSizeY_title;
+	public Texture2D backgroundTexture;
 	public GUISkin buttonStyle;
 	
 	void Start(){
@@ -20,14 +21,15 @@ public class TitleScreenTest : MonoBehaviour {
 	
 	void Update(){
 	xpos = (Screen.width/2)-(buttonImage.width/2);
-	ypos = (Screen.height/2)-(buttonImage.height/2);
+	ypos = (Screen.height/3);
 	}
 	
 	void OnGUI() {
-		GUI.skin = buttonStyle;
-		GUI.Label (new Rect (xpos-changeSizeX_title,ypos-changeSizeY_title, MagmanautTitle.width, MagmanautTitle.height),MagmanautTitle);
+		
+		GUI.Label (new Rect ((Screen.width/2)-(MagmanautTitle.width/2),Screen.height/16, MagmanautTitle.width, MagmanautTitle.height),MagmanautTitle);
         
-		if (GUI.Button(new Rect(xpos,ypos,buttonImage.width-changeSizeX_button,buttonImage.height-changeSizeY_button), buttonImage)){
+		GUI.skin = buttonStyle;
+		if (GUI.Button(new Rect(xpos,ypos,buttonImage.width,buttonImage.height), buttonImage)){
         Application.LoadLevel("Testing");}
 
     }
