@@ -48,6 +48,7 @@ ModelImporter:
     7400002: Stand
     7400004: Jump
     7400006: Fall
+    7400008: Spin
     9500000: //RootNode
     11100000: //RootNode
     13700000: pCube1
@@ -132,6 +133,27 @@ ModelImporter:
       firstFrame: 77
       lastFrame: 122
       wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      transformMask: []
+    - name: Spin
+      takeName: Take 001
+      firstFrame: 123
+      lastFrame: 152
+      wrapMode: 1
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0

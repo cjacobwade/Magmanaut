@@ -104,7 +104,7 @@ public class Player : MonoBehaviour {
 	
 	void InAir ()
 	{
-		if(!model.animation["Jump"].enabled)
+		if(!model.animation["Jump"].enabled && !model.animation["Spin"].enabled)
 			PlayAnimation("Fall",.5f);
 		
 		velocity.y += gravitySpeed*Time.deltaTime;
@@ -113,6 +113,7 @@ public class Player : MonoBehaviour {
 			if(Input.GetKeyDown(KeyCode.Space)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
 			{
 				isDouble = true;
+				PlayAnimation("Spin",1.2f);
 				velocity.y = 0;
 				velocity.y += doubleSpeed;
 			}
