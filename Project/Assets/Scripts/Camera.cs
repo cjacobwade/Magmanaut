@@ -5,9 +5,9 @@ public class Camera : MonoBehaviour {
 	public Texture2D pauseButton;
 	public Texture2D playButton;
 	private Texture2D currentButton;
-	public GUISkin transparentBorder;
+	public GUISkin transparentBorder,homeIconSkin;
 	public Texture2D menuBG;
-	public Texture2D HomeIcon;
+	public Texture2D HomeIcon,HomeIconPressed;
 	// Use this for initialization
 	
 	
@@ -31,7 +31,9 @@ public class Camera : MonoBehaviour {
 		GUI.skin = transparentBorder;			
 		if (Time.timeScale == 0){
 			GUI.DrawTexture(new Rect(Screen.width-190,0,196,Screen.height),menuBG);
+			
 			if(GUI.Button(new Rect(xpos,Screen.height - 145,128,128),HomeIcon)){
+				HomeIcon = HomeIconPressed;
 				Application.LoadLevel("StartScreen");
 			}
 		}
