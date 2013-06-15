@@ -27,20 +27,21 @@ public class Camera : MonoBehaviour {
 	
 	void OnGUI()
 	{
-		int xpos = Screen.width-(playButton.width+32);
+		//int xpos = Screen.width-(playButton.width + Screen.width/9);
+		
+		//HI BRADEN!!! BASING BUTTON POSITIONS ON PIXEL OFFSET WON'T ALLOW YOU TO SCALE BY SCREEN SIZE
+		//you need to use screen.width and screen.height or zero for everything GUI related
 		GUI.skin = transparentBorder;			
-		if (Time.timeScale == 0){
-			GUI.DrawTexture(new Rect(Screen.width-190,0,196,Screen.height),menuBG);
-			
-			if(GUI.Button(new Rect(xpos,Screen.height - 145,128,128),HomeIcon)){
+		if (Time.timeScale == 0)
+		{
+			GUI.DrawTexture(new Rect(Screen.width-Screen.width/8.4f,0,Screen.width/7,Screen.height),menuBG);//Transparent bar
+			if(GUI.Button(new Rect(Screen.width-(Screen.width/7.7f),Screen.height*7/9,Screen.width/7,Screen.height/7),HomeIcon))//Home button
+			{
 				HomeIcon = HomeIconPressed;
 				Application.LoadLevel("StartScreen");
 			}
 		}
-		
-
-
-		if(GUI.Button(new Rect(xpos,32,currentButton.width,currentButton.height),currentButton))
+		if(GUI.Button(new Rect(Screen.width-(Screen.width/7.7f),Screen.height/9,Screen.width/7,Screen.height/7),currentButton))//Play/pause button
 		{	
 			if (Time.timeScale == 0)
 			{
