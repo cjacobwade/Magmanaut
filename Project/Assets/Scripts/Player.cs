@@ -5,6 +5,7 @@ public class Player : MonoBehaviour {
 	
 	//Other
 	
+		public GameObject model;
 		public GameObject mover;
 	
 	//Movement
@@ -91,6 +92,7 @@ public class Player : MonoBehaviour {
 	
 	void OnGround ()
 	{
+		PlayAnimation("Walk",2);
 		isDouble = false;
 		if(Input.GetKeyDown(KeyCode.Space)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
 		{
@@ -101,6 +103,7 @@ public class Player : MonoBehaviour {
 	
 	void InAir ()
 	{
+		PlayAnimation("Stand",0);
 		velocity.y += gravitySpeed*Time.deltaTime;
 		if(!isDouble)
 		{
@@ -122,5 +125,11 @@ public class Player : MonoBehaviour {
 				isDouble = true;
 				mover.GetComponent<Cycle>().platMove = false;
 			}
-	}	
+	}
+	
+	void PlayAnimation(string name,float speed)
+	{
+		model.animation[name].speed = speed;
+		model.animation.Play(name);
+	}
 }

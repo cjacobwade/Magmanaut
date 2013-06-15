@@ -46,9 +46,9 @@ public class Cycle : MonoBehaviour {
 			for(int i=0;i<platforms.Length;i++)//If this doesn't make sense look up for loops
 			{
 				//For each platform:
-				platforms[i].transform.Translate(new Vector3(0,0,-platMoveSpeed)*Time.deltaTime);//Move at a constant rate
-				if(platforms[i].transform.position.z < transform.position.z)//Go back to start
-					platforms[i].transform.position = (new Vector3(transform.position.x,transform.position.y,spawner.transform.position.z));
+				platforms[i].transform.Translate(new Vector3(0,0,platMoveSpeed)*Time.deltaTime);//Move at a constant rate
+				if(platforms[i].transform.position.z > transform.position.z)//Go back to start
+					platforms[i].transform.position = (new Vector3(transform.position.x,platforms[i].transform.position.y,spawner.transform.position.z));
 			}
 		}
 		else

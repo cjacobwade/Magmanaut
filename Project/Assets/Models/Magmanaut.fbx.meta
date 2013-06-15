@@ -4,11 +4,51 @@ ModelImporter:
   serializedVersion: 15
   fileIDToRecycleName:
     100000: //RootNode
+    100002: joint1
+    100004: joint13
+    100006: joint14
+    100008: joint15
+    100010: joint16
+    100012: joint17
+    100014: joint18
+    100016: joint19
+    100018: joint2
+    100020: joint20
+    100022: joint21
+    100024: joint22
+    100026: joint23
+    100028: joint24
+    100030: joint25
+    100032: joint26
+    100034: joint27
+    100036: pCube1
     400000: //RootNode
+    400002: joint1
+    400004: joint13
+    400006: joint14
+    400008: joint15
+    400010: joint16
+    400012: joint17
+    400014: joint18
+    400016: joint19
+    400018: joint2
+    400020: joint20
+    400022: joint21
+    400024: joint22
+    400026: joint23
+    400028: joint24
+    400030: joint25
+    400032: joint26
+    400034: joint27
+    400036: pCube1
     2300000: //RootNode
     3300000: //RootNode
     4300000: pCube1
+    7400000: Walk
+    7400002: Stand
     9500000: //RootNode
+    11100000: //RootNode
+    13700000: pCube1
   materials:
     importMaterials: 1
     materialName: 0
@@ -21,7 +61,49 @@ ModelImporter:
     animationPositionError: .5
     animationScaleError: .5
     animationWrapMode: 0
-    clipAnimations: []
+    clipAnimations:
+    - name: Walk
+      takeName: Take 001
+      firstFrame: 2
+      lastFrame: 61
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      transformMask: []
+    - name: Stand
+      takeName: Take 001
+      firstFrame: 1
+      lastFrame: 1.10000002
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      transformMask: []
     isReadable: 1
   meshes:
     lODScreenPercentages: []
@@ -59,5 +141,5 @@ ModelImporter:
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   additionalBone: 1
-  animationType: 2
+  animationType: 1
   userData: 
