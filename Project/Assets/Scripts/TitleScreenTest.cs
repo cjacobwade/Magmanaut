@@ -6,31 +6,33 @@ public class TitleScreenTest : MonoBehaviour {
 	
 	public Texture2D buttonImage;
 	public Texture2D MagmanautTitle;
-	int xpos;
-	int ypos;
-	public int changeSizeX_button;
-	public int changeSizeY_button;
-	public int changeSizeX_title;
-	public int changeSizeY_title;
-	public Texture2D backgroundTexture;
+	int xpos_start,ypos_start,xpos_title,ypos_title;
 	public GUISkin buttonStyle;
 	
 	void Start(){
+		// Set Screen to landscape
 		Screen.orientation = ScreenOrientation.Landscape;
+		xpos_start = (Screen.width/2)-(buttonImage.width/2);
+		ypos_start = (Screen.height/2)-27;
+		xpos_title = (Screen.width/2)-(MagmanautTitle.width/2-27);
+		ypos_title = (Screen.height/2) - 200;
 	}
 	
 	void Update(){
-	xpos = (Screen.width/2)-(buttonImage.width/2);
-	ypos = (Screen.height/3);
+
 	}
 	
 	void OnGUI() {
-		
-		GUI.Label (new Rect ((Screen.width/2)-(MagmanautTitle.width/2),Screen.height/16, MagmanautTitle.width, MagmanautTitle.height),MagmanautTitle);
-        
+		        
 		GUI.skin = buttonStyle;
-		if (GUI.Button(new Rect(xpos,ypos,buttonImage.width,buttonImage.height), buttonImage)){
-        Application.LoadLevel("Testing");}
+		
+		// Magmanaut Title Image
+		GUI.Label(new Rect(xpos_title,ypos_title, MagmanautTitle.width, MagmanautTitle.height), MagmanautTitle);
+		
+		// Start Button
+		if (GUI.Button(new Rect(xpos_start,ypos_start,buttonImage.width,buttonImage.height), buttonImage)){
+        	Application.LoadLevel("Testing");}
 
+		
     }
 }
