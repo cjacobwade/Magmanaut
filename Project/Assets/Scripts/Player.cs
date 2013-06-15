@@ -92,18 +92,21 @@ public class Player : MonoBehaviour {
 	
 	void OnGround ()
 	{
-		PlayAnimation("Walk",2);
+		PlayAnimation("Walk",2.5f);
 		isDouble = false;
 		if(Input.GetKeyDown(KeyCode.Space)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
 		{
 			velocity.y = 0;
 			velocity.y += jumpSpeed;
+			PlayAnimation("Jump",1);
 		}
 	}
 	
 	void InAir ()
 	{
-		PlayAnimation("Stand",0);
+		if(!model.animation["Jump"].enabled)
+			PlayAnimation("Fall",.5f);
+		
 		velocity.y += gravitySpeed*Time.deltaTime;
 		if(!isDouble)
 		{
