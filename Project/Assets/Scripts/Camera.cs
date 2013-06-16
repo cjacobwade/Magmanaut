@@ -7,7 +7,8 @@ public class Camera : MonoBehaviour {
 	private Texture2D currentButton;
 	public GUISkin transparentBorder,homeIconSkin;
 	public Texture2D menuBG;
-	public Texture2D HomeIcon,HomeIconPressed;
+	public Texture2D currentHomeIcon,HomeIcon,HomeIconPressed;
+	private Vector2 mousePos_2D;
 	// Use this for initialization
 	
 	
@@ -15,6 +16,7 @@ public class Camera : MonoBehaviour {
 	{
 		Time.timeScale = 1;
 		currentButton = pauseButton;
+		currentHomeIcon = HomeIcon;
 		Screen.orientation = ScreenOrientation.Landscape;
 		
 
@@ -22,7 +24,7 @@ public class Camera : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		CheckHomeButton();
 	}
 	
 	void OnGUI()
@@ -35,9 +37,8 @@ public class Camera : MonoBehaviour {
 		if (Time.timeScale == 0)
 		{
 			GUI.DrawTexture(new Rect(Screen.width-Screen.width/8.4f,0,Screen.width/7,Screen.height),menuBG);//Transparent bar
-			if(GUI.Button(new Rect(Screen.width-(Screen.width/7.7f),Screen.height*7/9,Screen.width/7,Screen.height/7),HomeIcon))//Home button
+			if(GUI.Button(new Rect(Screen.width-(Screen.width/7.7f),Screen.height*7/9,Screen.width/7,Screen.height/7),currentHomeIcon))//Home button
 			{
-				HomeIcon = HomeIconPressed;
 				Application.LoadLevel("StartScreen");
 			}
 		}
@@ -59,5 +60,17 @@ public class Camera : MonoBehaviour {
 
 		}
 	}
+	
+		void CheckHomeButton() 
+	{
+		// Gets position of input
+		mousePos_2D = new Vector2(Input.mousePosition.x, (Screen.height - Input.mousePosition.y));
+		
+		// Compares it against boundaries of the button
+		if ((mousePos_2D.x > Screen.width-(Screen.width/7.7f)) && (mousePos_2D.x < Screen.width-(Screen.width/7.7f) + Screen.width/7) && (mousePos_2D.y > Screen.height*7/9) && (mousePos_2D.y < Screen.height*7/9 + Screen.height/7))
+			currentHomeIcon = HomeIconPressed;
+		else currentHomeIcon = HomeIcon;;
+	}
+	
 }		
 	

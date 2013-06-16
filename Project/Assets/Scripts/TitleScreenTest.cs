@@ -9,7 +9,8 @@ public class TitleScreenTest : MonoBehaviour {
 	int xpos_start,ypos_start,xpos_title,ypos_title;
 	public GUISkin buttonStyle;
 	private Texture2D currentbuttonImage;
-
+	Vector2 fingerPos,mousePos_2D;
+	private bool isonbutton;
 	
 	void Start(){
 		// Set Screen to landscape
@@ -22,29 +23,37 @@ public class TitleScreenTest : MonoBehaviour {
 	}
 	
 	void Update(){
-
+		
+		// Button Pressing
+		onButton();
 	}
 	
 	void OnGUI() {
-		        
+		
+		// Removes button borders
 		GUI.skin = buttonStyle;
 		
 		// Magmanaut Title Image
 		GUI.Label(new Rect(xpos_title,ypos_title, MagmanautTitle.width, MagmanautTitle.height), MagmanautTitle);
-		 if (Input.GetButton ("Fire1")){
-			buttonImage = buttonImagePressed;
-		} 
+		 
 		
 		// Start Button
 		if (GUI.Button(new Rect(xpos_start,ypos_start,buttonImage.width,buttonImage.height), currentbuttonImage)){
-		Application.LoadLevel("Testing");
+			Application.LoadLevel("Testing");
 	}
-		if (GUI.RepeatButton(new Rect(xpos_start,ypos_start,buttonImage.width,buttonImage.height), buttonImage)){
-        	
-			currentbuttonImage = buttonImagePressed;
+		
 		
 		}
-
+	void onButton() 
+	{
+		// Gets position of input
+		mousePos_2D = new Vector2(Input.mousePosition.x, (Screen.height - Input.mousePosition.y));
+		
+		// Compares it against boundaries of the button
+		if ((mousePos_2D.x > xpos_start) && (mousePos_2D.x < xpos_start + currentbuttonImage.width) && (mousePos_2D.y > ypos_start) && (mousePos_2D.y < ypos_start + currentbuttonImage.height))
+			currentbuttonImage = buttonImagePressed;
+		else currentbuttonImage = buttonImage;
+	}
+	
 	
     }
-}
