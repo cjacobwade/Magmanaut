@@ -17,11 +17,15 @@ public class Cycle : MonoBehaviour {
 	
 		//'Randomly' select which piece to use
 			//Types of chunks:
-				//Basic
-				//Enemy
-				//Small
-				//Large
-				//Cave (everything is dark but your path and possible paths)
+				//Size
+					//Small
+					//Medium
+					//Large
+				//Area
+					//Basic (Cavernous dark area - GOW)
+					//Cave (everything is dark but your path and possible paths)
+					//Lava (lit up by Magma - fight in OoT with Volvagia)
+					//Lake (Underwater lake - Pikmin or Dwemers in Skyrim)
 		//Placement
 			//Max, min distance to next chunks
 			//Max, min height of next chunks

@@ -68,7 +68,7 @@ public class Player : MonoBehaviour {
 	{
 		Movement();
 		SideCheck();
-		
+
 		if(Input.GetKey(KeyCode.R))
 			Application.LoadLevel(Application.loadedLevel);
 	}
@@ -113,7 +113,10 @@ public class Player : MonoBehaviour {
 			if(Input.GetKeyDown(KeyCode.Space)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
 			{
 				isDouble = true;
-				PlayAnimation("Spin",1.2f);
+				if(RandomBool())
+					PlayAnimation("Spin",1.2f);
+				else
+					PlayAnimation("Spin",1.2f);//Change to spin the other way
 				velocity.y = 0;
 				velocity.y += doubleSpeed;
 			}
@@ -135,5 +138,10 @@ public class Player : MonoBehaviour {
 	{
 		model.animation[name].speed = speed;
 		model.animation.Play(name);
+	}
+	
+	bool RandomBool()
+	{
+		return (Random.value > 0.5f);	
 	}
 }
