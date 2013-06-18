@@ -68,6 +68,7 @@ public class Player : MonoBehaviour {
 	{
 		Movement();
 		SideCheck();
+		//BottomCheck();
 
 		if(Input.GetKey(KeyCode.R))
 			Application.LoadLevel(Application.loadedLevel);
@@ -125,13 +126,32 @@ public class Player : MonoBehaviour {
 	
 	void SideCheck ()
 	{
+	
+		Vector3 playerTop = new Vector3(transform.position.x,transform.position.y+.5f,transform.position.z); //Top of player
+		Vector3 playerBottom = new Vector3(transform.position.x,transform.position.y-.3f,transform.position.z);//Bottom of player
 		//Check for collisions against platform sides
-			//Debug.DrawRay(transform.position,-transform.forward,Color.red,.5f);//used to draw show the raycast's path
-			if (Physics.Raycast(new Vector3(transform.position.x,transform.position.y-.5f,transform.position.z),-transform.forward,.5f,platLayer)||Physics.Raycast(new Vector3(transform.position.x,transform.position.y+.5f,transform.position.z),-transform.forward,.5f,platLayer))
+			Debug.DrawRay(playerTop,-transform.forward,Color.red,.5f);//used to draw show the raycast's path
+			Debug.DrawRay(playerBottom,-transform.forward,Color.red,.5f);
+			if(Physics.Raycast(playerTop,-transform.forward,.5f,platLayer)||(Physics.Raycast(playerBottom,-transform.forward,.5f,platLayer)))
 			{
 				isDouble = true;
 				mover.GetComponent<Cycle>().platMove = false;
 			}
+	}
+	
+	void BottomCheck()
+	{
+		CharacterController controller = GetComponent<CharacterController>();
+		
+		Vector3 playerBottom = new Vector3(transform.position.x,transform.position.y-.29f,transform.position.z-.3f);
+		Debug.DrawRay(transform.position,-transform.up,Color.red,.5f);//used to draw show the raycast's path
+		if(Physics.Raycast(playerBottom,-transform.up,.24f,platLayer))
+		{
+			mover.GetComponent<Cycle>().platMove = true;
+			//if(!controller.isGrounded)
+				velocity.y ++;
+		}
+			
 	}
 	
 	void PlayAnimation(string name,float speed)
