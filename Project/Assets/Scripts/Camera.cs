@@ -11,12 +11,16 @@ public class Camera : MonoBehaviour {
 	private Vector2 mousePos_2D;
 	private int currentScore;
 	public GUISkin scoreSkin;
+	private string currentScoreString;
+	private bool isPlaying;
 	// Use this for initialization
 	
 	
 	void Start () 
 	{
 		Time.timeScale = 1;
+		isPlaying = true;
+		currentScoreString = "Score: " + currentScore;
 		currentButton = pauseButton;
 		currentHomeIcon = HomeIcon;
 		Screen.orientation = ScreenOrientation.Landscape;
@@ -38,19 +42,25 @@ public class Camera : MonoBehaviour {
 		
 		//HI BRADEN!!! BASING BUTTON POSITIONS ON PIXEL OFFSET WON'T ALLOW YOU TO SCALE BY SCREEN SIZE
 		//you need to use screen.width and screen.height or zero for everything GUI related
-		GUI.skin = transparentBorder;			
+		GUI.skin = transparentBorder;	
+		
+		// Home button
 		if (Time.timeScale == 0)
 		{
-			GUI.DrawTexture(new Rect(Screen.width-Screen.width/8.4f,0,Screen.width/7,Screen.height),menuBG);//Transparent bar
+			GUI.DrawTexture(new Rect(10,10,Screen.width/1.01f,Screen.height/1.01f),menuBG);//Transparent bar
 			if(GUI.Button(new Rect(Screen.width-(Screen.width/7.7f),Screen.height*7/9,Screen.width/7,Screen.height/7),currentHomeIcon))//Home button
 			{
 				Application.LoadLevel("StartScreen");
 			}
 		}
-		if(GUI.Button(new Rect(Screen.width-(Screen.width/7.7f),Screen.height/9,Screen.width/7,Screen.height/7),currentButton))//Play/pause button
+		
+		// Play/pause button
+		if(GUI.Button(new Rect(Screen.width-(Screen.width/7.7f),Screen.height/9,Screen.width/7,Screen.height/7),currentButton))
 		{	
 			if (Time.timeScale == 0)
 			{
+				isPlaying = true;
+				displayScore(true);
 				Time.timeScale = 1;
 				currentButton = pauseButton;
 				
@@ -58,18 +68,18 @@ public class Camera : MonoBehaviour {
 			
 			else if (Time.timeScale == 1)
 			{
+				isPlaying = false;
+				displayScore(false);
 				Time.timeScale = 0;
 				currentButton = playButton;
 
 			}
 
 		}
-		
-			
 
 
 		GUI.skin = scoreSkin;
-		GUI.Label(new Rect(Screen.width/64,Screen.width/48,256,128),"Score: " + currentScore);
+		GUI.Label(new Rect(Screen.width/64,Screen.width/48,256,128), currentScoreString);
 
 	}
 	
@@ -88,7 +98,18 @@ public class Camera : MonoBehaviour {
 	{
 		yield return new WaitForSeconds(waitTime);
 		currentScore = currentScore + 37;
+		if (isPlaying == true){ 
 		StartCoroutine(Timer (waitTime));
+		displayScore(true);
+		}
 	}
+	void displayScore(bool state){
+		if (state == true){
+			currentScoreString = "Score: " + currentScore;}
+		if (state == false){
+			currentScoreString = "";
+		}
+	}
+
 }		
 	
