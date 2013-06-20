@@ -130,10 +130,10 @@ public class Player : MonoBehaviour {
 	{
 	
 		Vector3 playerTop = new Vector3(transform.position.x,transform.position.y+.5f,transform.position.z); //Top of player
-		Vector3 playerBottom = new Vector3(transform.position.x,transform.position.y-.3f,transform.position.z);//Bottom of player
+		Vector3 playerBottom = new Vector3(transform.position.x,transform.position.y-.5f,transform.position.z);//Bottom of player
 		//Check for collisions against platform sides
-			//Debug.DrawRay(playerTop,-transform.forward,Color.red,.5f);//used to draw show the raycast's path
-			//Debug.DrawRay(playerBottom,-transform.forward,Color.red,.5f);
+			Debug.DrawRay(playerTop,-transform.forward,Color.red,.5f);//used to draw show the raycast's path
+			Debug.DrawRay(playerBottom,-transform.forward,Color.red,.5f);
 			if(Physics.Raycast(playerTop,-transform.forward,.5f,platLayer)||(Physics.Raycast(playerBottom,-transform.forward,.5f,platLayer)))
 			{
 				isDouble = true;
