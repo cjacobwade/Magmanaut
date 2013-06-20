@@ -23,6 +23,7 @@ ModelImporter:
     100034: joint27
     100036: locator1
     100038: pCube1
+    100040: nurbsCircle1
     400000: //RootNode
     400002: joint1
     400004: joint13
@@ -43,6 +44,7 @@ ModelImporter:
     400034: joint27
     400036: locator1
     400038: pCube1
+    400040: nurbsCircle1
     2300000: //RootNode
     3300000: //RootNode
     4300000: pCube1
