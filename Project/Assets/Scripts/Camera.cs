@@ -61,7 +61,7 @@ public class Camera : MonoBehaviour {
 		}
 	}
 	
-		void CheckHomeButton() 
+	void CheckHomeButton() 
 	{
 		// Gets position of input
 		mousePos_2D = new Vector2(Input.mousePosition.x, (Screen.height - Input.mousePosition.y));
@@ -72,5 +72,11 @@ public class Camera : MonoBehaviour {
 		else currentHomeIcon = HomeIcon;;
 	}
 	
+	public IEnumerator Timer(int waitTime)
+	{
+		yield return new WaitForSeconds(waitTime);
+		print ("Waited " + waitTime + " seconds, then printed this");
+		StartCoroutine(Timer (1));
+	}
 }		
 	
