@@ -4,36 +4,36 @@ using System.Collections;
 public class Camera : MonoBehaviour {
 	public Texture2D pauseButton;
 	public Texture2D playButton;
-	private Texture2D currentButton;
-	public GUISkin transparentBorder,homeIconSkin;
+	Texture2D currentButton;
+	public GUISkin transparentBorder;
 	public Texture2D menuBG;
 	public Texture2D currentHomeIcon,HomeIcon,HomeIconPressed;
-	private Vector2 mousePos_2D;
-	private int currentScore;
-	public GUISkin scoreSkin;
-	private string currentScoreString;
-	private bool isPlaying;
-	// Use this for initialization
+	Vector2 mousePos_2D;
 	
+	//Score
+	
+		public int scoreRate;
+		int currentScore;
+		public GUISkin skinScore;
+		string stringScore;
+		bool displayScore;
+		public float waitTime;
 	
 	void Start () 
 	{
+		StartCoroutine(Timer(waitTime));
 		Time.timeScale = 1;
-		isPlaying = true;
-		currentScoreString = "Score: " + currentScore;
+		stringScore = "Score: " + currentScore;
 		currentButton = pauseButton;
 		currentHomeIcon = HomeIcon;
 		Screen.orientation = ScreenOrientation.Landscape;
 		GUIStyle myStyle = new GUIStyle();
-		
-
-		
-
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		CheckHomeButton();
+		DisplayScore();
 	}
 	
 	void OnGUI()
@@ -59,28 +59,21 @@ public class Camera : MonoBehaviour {
 		{	
 			if (Time.timeScale == 0)
 			{
-				isPlaying = true;
-				displayScore(true);
+				displayScore = true;
 				Time.timeScale = 1;
 				currentButton = pauseButton;
-				
+				StartCoroutine(Timer (waitTime));
 			}
 			
 			else if (Time.timeScale == 1)
 			{
-				isPlaying = false;
-				displayScore(false);
+				displayScore = false;
 				Time.timeScale = 0;
 				currentButton = playButton;
-
 			}
-
 		}
-
-
-		GUI.skin = scoreSkin;
-		GUI.Label(new Rect(Screen.width/64,Screen.width/48,256,128), currentScoreString);
-
+		GUI.skin = skinScore;
+		GUI.Label(new Rect(Screen.width/64,Screen.width/48,256,128), stringScore);
 	}
 	
 	void CheckHomeButton() 
@@ -91,23 +84,24 @@ public class Camera : MonoBehaviour {
 		// Compares it against boundaries of the button
 		if ((mousePos_2D.x > Screen.width-(Screen.width/7.7f)) && (mousePos_2D.x < Screen.width-(Screen.width/7.7f) + Screen.width/7) && (mousePos_2D.y > Screen.height*7/9) && (mousePos_2D.y < Screen.height*7/9 + Screen.height/7))
 			currentHomeIcon = HomeIconPressed;
-		else currentHomeIcon = HomeIcon;;
+		else currentHomeIcon = HomeIcon;
 	}
 	
 	public IEnumerator Timer(float waitTime)
 	{
 		yield return new WaitForSeconds(waitTime);
-		currentScore = currentScore + 37;
-		if (isPlaying == true){ 
-		StartCoroutine(Timer (waitTime));
-		displayScore(true);
-		}
+		currentScore = currentScore + scoreRate;
+		displayScore = true;
+		if (Time.timeScale == 1)
+			StartCoroutine(Timer (waitTime));
+		else
+			displayScore = false;
 	}
-	void displayScore(bool state){
-		if (state == true){
-			currentScoreString = "Score: " + currentScore;}
-		if (state == false){
-			currentScoreString = "";
+	void DisplayScore(){
+		if (displayScore){
+			stringScore = "Score: " + currentScore;}
+		if (!displayScore){
+			stringScore = "";
 		}
 	}
 
