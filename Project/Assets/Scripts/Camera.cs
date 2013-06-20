@@ -9,6 +9,7 @@ public class Camera : MonoBehaviour {
 	public Texture2D menuBG;
 	public Texture2D currentHomeIcon,HomeIcon,HomeIconPressed;
 	private Vector2 mousePos_2D;
+	private int currentScore;
 	// Use this for initialization
 	
 	
@@ -59,6 +60,7 @@ public class Camera : MonoBehaviour {
 			}
 
 		}
+		GUI.Label(new Rect(0,0,256,128),"Score: " + currentScore);
 	}
 	
 	void CheckHomeButton() 
@@ -72,11 +74,11 @@ public class Camera : MonoBehaviour {
 		else currentHomeIcon = HomeIcon;;
 	}
 	
-	public IEnumerator Timer(int waitTime)
+	public IEnumerator Timer(float waitTime)
 	{
 		yield return new WaitForSeconds(waitTime);
-		print ("Waited " + waitTime + " seconds, then printed this");
-		StartCoroutine(Timer (1));
+		currentScore = currentScore + 37;
+		StartCoroutine(Timer (waitTime));
 	}
 }		
 	

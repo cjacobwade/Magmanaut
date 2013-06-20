@@ -61,7 +61,7 @@ public class Player : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
-		StartCoroutine(camera.GetComponent<Camera>().Timer(1));
+		StartCoroutine(camera.GetComponent<Camera>().Timer(.0625f));
 		currentHealth = maxHealth;
 	}
 	
