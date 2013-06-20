@@ -10,6 +10,7 @@ public class Camera : MonoBehaviour {
 	public Texture2D currentHomeIcon,HomeIcon,HomeIconPressed;
 	private Vector2 mousePos_2D;
 	private int currentScore;
+	public GUISkin scoreSkin;
 	// Use this for initialization
 	
 	
@@ -19,6 +20,9 @@ public class Camera : MonoBehaviour {
 		currentButton = pauseButton;
 		currentHomeIcon = HomeIcon;
 		Screen.orientation = ScreenOrientation.Landscape;
+		GUIStyle myStyle = new GUIStyle();
+		
+
 		
 
 	}
@@ -60,7 +64,13 @@ public class Camera : MonoBehaviour {
 			}
 
 		}
-		GUI.Label(new Rect(0,0,256,128),"Score: " + currentScore);
+		
+			
+
+
+		GUI.skin = scoreSkin;
+		GUI.Label(new Rect(Screen.width/64,Screen.width/48,256,128),"Score: " + currentScore);
+
 	}
 	
 	void CheckHomeButton() 
