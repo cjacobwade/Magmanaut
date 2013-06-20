@@ -61,6 +61,7 @@ public class Player : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
+
 		currentHealth = maxHealth;
 	}
 	
@@ -96,6 +97,7 @@ public class Player : MonoBehaviour {
 	{
 		PlayAnimation("Walk",2.5f);
 		isDouble = false;
+		velocity.y = -3;
 		if(Input.GetKeyDown(KeyCode.Space)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
 		{
 			velocity.y = 0;

@@ -5,9 +5,21 @@ public class Cycle : MonoBehaviour {
 	
 	//Other
 	
-		public GameObject spawner;
-		public GameObject[] platforms;
+		//Platforms
+			public GameObject lastPlat;//Platform that spawned last
+			public GameObject currentPlat;//Platform that most recently spawned
+			public GameObject nextPlat;//Platform that will spawn next
+			GameObject[] allPlats;//Plats being rendered currently
 	
+		public GameObject destroyer;//object that destroys platforms
+	
+	//Platform sets
+		
+		public GameObject[] basicPlat;
+//		public GameObject[] cavePlat;
+//		public GameObject[] lavaPlat;
+//		public GameObject[] lakePlat;
+
 	//Movement
 	
 		public int platMoveSpeed;
@@ -21,6 +33,8 @@ public class Cycle : MonoBehaviour {
 					//Small
 					//Medium
 					//Large
+					//Trap?
+					//Enemy/Boss
 				//Area
 					//Basic (Cavernous dark area - GOW)
 					//Cave (everything is dark but your path and possible paths)
@@ -47,18 +61,18 @@ public class Cycle : MonoBehaviour {
 	{
 		if(platMove)
 		{
-			for(int i=0;i<platforms.Length;i++)//If this doesn't make sense look up for loops
+			for(int i=0;i<allPlats.Length;i++)//If this doesn't make sense look up for loops
 			{
 				//For each platform:
-				platforms[i].transform.Translate(new Vector3(0,0,platMoveSpeed)*Time.deltaTime);//Move at a constant rate
-				if(platforms[i].transform.position.z > transform.position.z)//Go back to start
-					platforms[i].transform.position = (new Vector3(transform.position.x,platforms[i].transform.position.y,spawner.transform.position.z));
+				allPlats[i].transform.Translate(new Vector3(0,0,platMoveSpeed)*Time.deltaTime);//Move at a constant rate
+				if(allPlats[i].transform.position.z > transform.position.z)//Go back to start
+					allPlats[i].transform.position = (new Vector3(transform.position.x,allPlats[i].transform.position.y,destroyer.transform.position.z));
 			}
 		}
 		else
 		{
-			for(int i=0;i<platforms.Length;i++)
-				platforms[i].transform.Translate(new Vector3(0,0,0)*Time.deltaTime);
+			for(int i=0;i<allPlats.Length;i++)
+				allPlats[i].transform.Translate(new Vector3(0,0,0)*Time.deltaTime);
 		}	
 	}
 }
