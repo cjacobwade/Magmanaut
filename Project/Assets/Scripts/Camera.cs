@@ -25,7 +25,9 @@ public class Camera : MonoBehaviour {
 	//Other
 		Vector2 mousePos;
 		public float waitTime;//time between changes
-
+		public float buttonSizeDivisor,menuSizeDivisor;	
+		private float buttonSizeX,menuOutlineSizeY,menuOutlineYOffset;
+	
 	void Start () 
 	{
 		StartCoroutine(Timer(waitTime));
@@ -35,6 +37,9 @@ public class Camera : MonoBehaviour {
 		currenthomeButton = homeButton;
 		currentPlayButton = playButton;
 		Screen.orientation = ScreenOrientation.Landscape;
+		buttonSizeX = Screen.width / buttonSizeDivisor;
+		menuOutlineSizeY = Screen.height / menuSizeDivisor;
+		menuOutlineYOffset = (Screen.height - menuOutlineSizeY)/2;
 	}
 	
 	// Update is called once per frame
@@ -52,12 +57,12 @@ public class Camera : MonoBehaviour {
 		if (Time.timeScale == 0)//IF PAUSED
 		{
 			GUI.DrawTexture(new Rect(0,0,Screen.width,Screen.height),menuBG);//Transparent Background
-			GUI.DrawTexture(new Rect((Screen.width/2)-300,Screen.height/14,600,600),menuBorder);//Pause Background Square
+			GUI.DrawTexture(new Rect((Screen.width/2)-(menuOutlineSizeY/2),menuOutlineYOffset,menuOutlineSizeY,menuOutlineSizeY),menuBorder);//Pause Background Square
 
-			if (GUI.Button(new Rect((Screen.width/2)-167,Screen.height/1.8f,400,200),currenthomeButton)) // Home Button
+			if (GUI.Button(new Rect((Screen.width/2)-(buttonSizeX/2),Screen.height/1.8f,buttonSizeX,buttonSizeX/2),currenthomeButton)) // Home Button
 				Application.LoadLevel("StartScreen");
 			
-			if(GUI.Button(new Rect((Screen.width/2)-167,Screen.height/3.5f,400,200),currentPlayButton)) // Play Button
+			if (GUI.Button(new Rect((Screen.width/2)-(buttonSizeX/2),Screen.height/3.5f,buttonSizeX,buttonSizeX/2),currentPlayButton)) // Play Button
 			{
 				displayScore = true;
 				Time.timeScale = 1;
