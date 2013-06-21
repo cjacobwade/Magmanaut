@@ -5,7 +5,7 @@ public class Player : MonoBehaviour {
 	
 	//Other
 	
-		public GameObject camera;
+		public GameObject gameCamera;
 		public GameObject model;
 		public GameObject platSpawner;
 	
@@ -77,7 +77,7 @@ public class Player : MonoBehaviour {
 
 		if(Input.GetKey(KeyCode.R))
 			Application.LoadLevel(Application.loadedLevel);
-			//camera.GetComponent<Camera>().playerFell = true;
+			//gameCamera.GetComponent<Camera>().playerFell = true;
 
 	}
 	
@@ -93,12 +93,12 @@ public class Player : MonoBehaviour {
 		
 		//In the air
 			//if(!controller.isGrounded)
-			if(!grounded)
+			else
 				InAir();
 		
 		controller.Move(velocity*Time.deltaTime);//Always moving at current velocity
 		if(transform.position.y < -3)//If fell off, restart level #Need to modularize in case levels would let you fall far or go higher up
-			Application.LoadLevel(Application.loadedLevel);
+			gameCamera.GetComponent<Camera>().playerFell = true;
 	}
 	
 //	void OnGround ()
@@ -146,13 +146,8 @@ public class Player : MonoBehaviour {
 				velocity.y = 0;
 				velocity.y += jumpSpeed;
 				PlayAnimation("Jump",1);
-				
+				StartCoroutine(Timer(.05f,"Jump"));
 			}
-		}
-		else
-		{
-			if(!gameStart)
-				isDouble = false;
 		}
 	}
 	
@@ -160,7 +155,6 @@ public class Player : MonoBehaviour {
 	{
 		if(!model.animation["Jump"].enabled && !model.animation["Spin"].enabled && !model.animation["Spin2"].enabled)
 			PlayAnimation("Fall",.5f);
-		
 		velocity.y += gravitySpeed*Time.deltaTime;
 		if(!isDouble)
 		{
@@ -205,7 +199,6 @@ public class Player : MonoBehaviour {
 			if(grounded)
 				isDouble = false;
 			grounded = false;
-			
 		}
 	}
 	

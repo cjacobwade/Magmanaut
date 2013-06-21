@@ -34,8 +34,7 @@ public class Camera : MonoBehaviour {
 	
 	void Start () 
 	{
-		playerFell = false;
-		StartCoroutine(Timer(waitTime));
+		StartCoroutine(ScoreTimer(waitTime));
 		Time.timeScale = 1;
 		stringScore = "Score: " + currentScore;
 		currentButton = pauseButton;
@@ -63,16 +62,13 @@ public class Camera : MonoBehaviour {
 		{
 			GUI.DrawTexture(new Rect(0,0,Screen.width,Screen.height),menuBG);//Transparent Background
 			GUI.DrawTexture(new Rect((Screen.width/2)-(menuOutlineSizeY/2),menuOutlineYOffset,menuOutlineSizeY,menuOutlineSizeY),menuBorder);//Pause Background Square
-
 			if (GUI.Button(new Rect((Screen.width/2)-(buttonSizeX/2),Screen.height/2.35f-((buttonSizeX/2)/2),buttonSizeX,buttonSizeX/2),currentPlayButton)) // Play Button
 			{
 				displayScore = true;
 				Time.timeScale = 1;
 				currentButton = pauseButton;
-				StartCoroutine(Timer (waitTime));
+				StartCoroutine(ScoreTimer (waitTime));
 			}
-			
-			
 			if (GUI.Button(new Rect((Screen.width/2)-(buttonSizeX/2),Screen.height/1.35f-((buttonSizeX/2)/2),buttonSizeX,buttonSizeX/2),currenthomeButton)) // Home Button
 				Application.LoadLevel("StartScreen");
 		}
@@ -88,9 +84,17 @@ public class Camera : MonoBehaviour {
 			}
 		}
 		
-		if (playerFell){
-			fallScreen();}	
-		
+		if(playerFell)
+		{
+			StartCoroutine(FailTimer(1));
+			if(!displayScore)
+			{
+				GUI.DrawTexture(new Rect((Screen.width/2)-(menuOutlineSizeY/2),menuOutlineYOffset,menuOutlineSizeY,menuOutlineSizeY),fallOutline);//Fall Background Square}
+				if(Input.GetKeyDown(KeyCode.Space)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
+					Application.LoadLevel(Application.loadedLevel);
+			}
+		}
+
 		GUI.skin = skinScore;
 		GUI.Label(new Rect(Screen.width/64,Screen.width/48,256,128), stringScore);
 	}
@@ -117,15 +121,24 @@ public class Camera : MonoBehaviour {
 		else currentPlayButton = playButton;
 	}
 	
-	public IEnumerator Timer(float waitTime)
+	public IEnumerator ScoreTimer(float waitTime)
 	{
 		yield return new WaitForSeconds(waitTime);//Wait for x seconds
-		if(player.GetComponent<Player>().gameStart)
-			currentScore = currentScore + scoreRate;
-		if (Time.timeScale == 1)
-			StartCoroutine(Timer (waitTime));
-		else
-			displayScore = false;
+		if(!playerFell)
+		{
+			if(player.GetComponent<Player>().gameStart)
+				currentScore = currentScore + scoreRate;
+			if (Time.timeScale == 1)
+				StartCoroutine(ScoreTimer (waitTime));
+			else
+				displayScore = false;
+		}
+	}
+	
+	public IEnumerator FailTimer(float waitTime)
+	{	
+		yield return new WaitForSeconds(waitTime);//Wait for x seconds
+		displayScore = false;
 	}
 	
 	void DisplayScore()
@@ -134,13 +147,6 @@ public class Camera : MonoBehaviour {
 			stringScore = "Score: " + currentScore;
 		if (!displayScore)
 			stringScore = "";
-	}
-	
-	public void fallScreen()
-	{
-		displayScore = false;
-		GUI.DrawTexture(new Rect((Screen.width/2)-(menuOutlineSizeY/2),menuOutlineYOffset,menuOutlineSizeY,menuOutlineSizeY),fallOutline);//Fall Background Square
-		
 	}
 
 }		
