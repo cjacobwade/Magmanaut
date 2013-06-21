@@ -88,8 +88,8 @@ public class Camera : MonoBehaviour {
 			}
 		}
 		
-		if (playerFell)
-			fallScreen();	
+		if (playerFell){
+			fallScreen();}	
 		
 		GUI.skin = skinScore;
 		GUI.Label(new Rect(Screen.width/64,Screen.width/48,256,128), stringScore);
