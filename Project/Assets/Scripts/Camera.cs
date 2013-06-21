@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Camera : MonoBehaviour {
 	
+	public GameObject player;
+	
 	//Images
 		public Texture2D pauseButton;
 		public Texture2D playButton;
@@ -110,7 +112,8 @@ public class Camera : MonoBehaviour {
 	public IEnumerator Timer(float waitTime)
 	{
 		yield return new WaitForSeconds(waitTime);//Wait for x seconds
-		currentScore = currentScore + scoreRate;
+		if(player.GetComponent<Player>().gameStart)
+			currentScore = currentScore + scoreRate;
 		if (Time.timeScale == 1)
 			StartCoroutine(Timer (waitTime));
 		else
