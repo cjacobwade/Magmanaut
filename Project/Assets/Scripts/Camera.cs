@@ -13,6 +13,7 @@ public class Camera : MonoBehaviour {
 		Texture2D currenthomeButton;
 		Texture2D currentPlayButton;
 		Texture2D currentButton;
+		public Texture2D fallOutline,fallRestart,fallRestart_pressed,fallHome,fallHome_pressed;
 	
 	//GUI Skins
 		public GUISkin transparentBorder;
@@ -29,9 +30,11 @@ public class Camera : MonoBehaviour {
 		public float waitTime;//time between changes
 		public float buttonSizeDivisor,menuSizeDivisor;	
 		private float buttonSizeX,menuOutlineSizeY,menuOutlineYOffset;
+		public bool playerFell;
 	
 	void Start () 
 	{
+		playerFell = false;
 		StartCoroutine(Timer(waitTime));
 		Time.timeScale = 1;
 		stringScore = "Score: " + currentScore;
@@ -61,16 +64,17 @@ public class Camera : MonoBehaviour {
 			GUI.DrawTexture(new Rect(0,0,Screen.width,Screen.height),menuBG);//Transparent Background
 			GUI.DrawTexture(new Rect((Screen.width/2)-(menuOutlineSizeY/2),menuOutlineYOffset,menuOutlineSizeY,menuOutlineSizeY),menuBorder);//Pause Background Square
 
-			if (GUI.Button(new Rect((Screen.width/2)-(buttonSizeX/2),Screen.height/1.8f,buttonSizeX,buttonSizeX/2),currenthomeButton)) // Home Button
-				Application.LoadLevel("StartScreen");
-			
-			if (GUI.Button(new Rect((Screen.width/2)-(buttonSizeX/2),Screen.height/3.5f,buttonSizeX,buttonSizeX/2),currentPlayButton)) // Play Button
+			if (GUI.Button(new Rect((Screen.width/2)-(buttonSizeX/2),Screen.height/2.35f-((buttonSizeX/2)/2),buttonSizeX,buttonSizeX/2),currentPlayButton)) // Play Button
 			{
 				displayScore = true;
 				Time.timeScale = 1;
 				currentButton = pauseButton;
 				StartCoroutine(Timer (waitTime));
 			}
+			
+			
+			if (GUI.Button(new Rect((Screen.width/2)-(buttonSizeX/2),Screen.height/1.35f-((buttonSizeX/2)/2),buttonSizeX,buttonSizeX/2),currenthomeButton)) // Home Button
+				Application.LoadLevel("StartScreen");
 		}
 		
 		// Pause button
@@ -83,6 +87,10 @@ public class Camera : MonoBehaviour {
 				currentButton = playButton;
 			}
 		}
+		
+		if (playerFell)
+			fallScreen();	
+		
 		GUI.skin = skinScore;
 		GUI.Label(new Rect(Screen.width/64,Screen.width/48,256,128), stringScore);
 	}
@@ -126,6 +134,13 @@ public class Camera : MonoBehaviour {
 			stringScore = "Score: " + currentScore;
 		if (!displayScore)
 			stringScore = "";
+	}
+	
+	public void fallScreen()
+	{
+		displayScore = false;
+		GUI.DrawTexture(new Rect((Screen.width/2)-(menuOutlineSizeY/2),menuOutlineYOffset,menuOutlineSizeY,menuOutlineSizeY),fallOutline);//Fall Background Square
+		
 	}
 
 }		
