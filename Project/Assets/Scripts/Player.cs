@@ -154,7 +154,6 @@ public class Player : MonoBehaviour {
 			//if(!controller.isGrounded)
 				velocity.y ++;
 		}
-			
 	}
 	
 	void PlayAnimation(string name,float speed)
