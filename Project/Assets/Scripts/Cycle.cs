@@ -64,7 +64,7 @@ public class Cycle : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
-		Random.seed = 1;
+		
 	}
 	
 	// Update is called once per frame
