@@ -13,6 +13,7 @@ public class Player : MonoBehaviour {
 	
 		public int moveSpeed;
 		public Vector3 velocity;
+		public bool gameStart;
 				
 	//Jumping
 	
@@ -95,20 +96,31 @@ public class Player : MonoBehaviour {
 	
 	void OnGround ()
 	{
-		PlayAnimation("Walk",2.5f);
+		if(platSpawner.GetComponent<Cycle>().platMove)
+			PlayAnimation("Walk",2.5f);
+		else
+			PlayAnimation("Idle",.7f);
 		isDouble = false;
 		velocity.y = -3;
 		if(Input.GetKeyDown(KeyCode.Space)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
 		{
-			velocity.y = 0;
-			velocity.y += jumpSpeed;
-			PlayAnimation("Jump",1);
+			if(!gameStart)
+			{
+				platSpawner.GetComponent<Cycle>().platMove = true;
+				gameStart = true;
+			}
+			else
+			{
+				velocity.y = 0;
+				velocity.y += jumpSpeed;
+				PlayAnimation("Jump",1);
+			}
 		}
 	}
 	
 	void InAir ()
 	{
-		if(!model.animation["Jump"].enabled && !model.animation["Spin"].enabled)
+		if(!model.animation["Jump"].enabled && !model.animation["Spin"].enabled && !model.animation["Spin2"].enabled)
 			PlayAnimation("Fall",.5f);
 		
 		velocity.y += gravitySpeed*Time.deltaTime;
@@ -120,7 +132,7 @@ public class Player : MonoBehaviour {
 				if(RandomBool())
 					PlayAnimation("Spin",1.2f);
 				else
-					PlayAnimation("Spin",1.2f);//Change to spin the other way
+					PlayAnimation("Spin2",1.2f);//Change to spin the other way
 				velocity.y = 0;
 				velocity.y += doubleSpeed;
 			}
