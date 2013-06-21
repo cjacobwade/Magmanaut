@@ -6,8 +6,8 @@ public class Camera : MonoBehaviour {
 	public Texture2D playButton;
 	Texture2D currentButton;
 	public GUISkin transparentBorder;
-	public Texture2D menuBG;
-	public Texture2D currentHomeIcon,HomeIcon,HomeIconPressed;
+	public Texture2D menuBG,pausePopup,pausePopupPlay,pausePopupHome,pausePopupPlay_Pressed;
+	public Texture2D currentHomeIcon,HomeIcon,HomeIconPressed,currentPlayButton;
 	Vector2 mousePos_2D;
 	
 	//Score
@@ -26,6 +26,7 @@ public class Camera : MonoBehaviour {
 		stringScore = "Score: " + currentScore;
 		currentButton = pauseButton;
 		currentHomeIcon = HomeIcon;
+		currentPlayButton = pausePopupPlay;
 		Screen.orientation = ScreenOrientation.Landscape;
 		GUIStyle myStyle = new GUIStyle();
 	}
@@ -33,6 +34,7 @@ public class Camera : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		CheckHomeButton();
+		CheckPlayButton();
 		DisplayScore();
 	}
 	
@@ -44,33 +46,33 @@ public class Camera : MonoBehaviour {
 		//you need to use screen.width and screen.height or zero for everything GUI related
 		GUI.skin = transparentBorder;	
 		
-		// Home button
+		// Pause Popup Screen
 		if (Time.timeScale == 0)
 		{
-			GUI.DrawTexture(new Rect(10,10,Screen.width/1.01f,Screen.height/1.01f),menuBG);//Transparent bar
-			if(GUI.Button(new Rect(Screen.width-(Screen.width/7.7f),Screen.height*7/9,Screen.width/7,Screen.height/7),currentHomeIcon))//Home button
+			GUI.DrawTexture(new Rect(0,0,Screen.width,Screen.height),menuBG);//Transparent bar
+			GUI.DrawTexture(new Rect((Screen.width/2)-300,Screen.height/14,600,600),pausePopup);//Pause Background Square
+
+			if (GUI.Button(new Rect((Screen.width/2)-167,Screen.height/1.8f,400,200),currentHomeIcon)) // Home Button
 			{
 				Application.LoadLevel("StartScreen");
 			}
+			if(GUI.Button(new Rect((Screen.width/2)-167,Screen.height/3.5f,400,200),currentPlayButton)) // Play Button
+		{
+			displayScore = true;
+			Time.timeScale = 1;
+			currentButton = pauseButton;
+			StartCoroutine(Timer (waitTime));
+		}
 		}
 		
-		// Play/pause button
+		// Pause button
+		if(Time.timeScale == 1){
 		if(GUI.Button(new Rect(Screen.width-(Screen.width/7.7f),Screen.height/9,Screen.width/7,Screen.height/7),currentButton))
 		{	
-			if (Time.timeScale == 0)
-			{
-				displayScore = true;
-				Time.timeScale = 1;
-				currentButton = pauseButton;
-				StartCoroutine(Timer (waitTime));
-			}
-			
-			else if (Time.timeScale == 1)
-			{
 				displayScore = false;
 				Time.timeScale = 0;
 				currentButton = playButton;
-			}
+		}
 		}
 		GUI.skin = skinScore;
 		GUI.Label(new Rect(Screen.width/64,Screen.width/48,256,128), stringScore);
@@ -82,9 +84,20 @@ public class Camera : MonoBehaviour {
 		mousePos_2D = new Vector2(Input.mousePosition.x, (Screen.height - Input.mousePosition.y));
 		
 		// Compares it against boundaries of the button
-		if ((mousePos_2D.x > Screen.width-(Screen.width/7.7f)) && (mousePos_2D.x < Screen.width-(Screen.width/7.7f) + Screen.width/7) && (mousePos_2D.y > Screen.height*7/9) && (mousePos_2D.y < Screen.height*7/9 + Screen.height/7))
+		if ((mousePos_2D.x > Screen.width/2.75f) && (mousePos_2D.x < Screen.width/2.75f + 400) && (mousePos_2D.y > Screen.height/1.75f+25) && (mousePos_2D.y < Screen.height/1.75f + 170))
 			currentHomeIcon = HomeIconPressed;
 		else currentHomeIcon = HomeIcon;
+	}
+	
+	void CheckPlayButton() 
+	{
+		// Gets position of input
+		mousePos_2D = new Vector2(Input.mousePosition.x, (Screen.height - Input.mousePosition.y));
+		
+		// Compares it against boundaries of the button
+		if ((mousePos_2D.x > Screen.width/2.75f) && (mousePos_2D.x < Screen.width/2.75f + 400) && (mousePos_2D.y > Screen.height/3.5f+25) && (mousePos_2D.y < Screen.height/3.5f + 170))
+			currentPlayButton = pausePopupPlay_Pressed;
+		else currentPlayButton = pausePopupPlay;
 	}
 	
 	public IEnumerator Timer(float waitTime)
