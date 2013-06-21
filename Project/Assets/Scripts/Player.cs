@@ -21,7 +21,9 @@ public class Player : MonoBehaviour {
 		public int jumpSpeed;
 		public int doubleSpeed;//double jump speed
 		public int gravitySpeed;
-		bool isDouble = false;//double jumping?
+		public bool grounded = false;
+		public bool isJump = false;
+		public bool isDouble = false;//double jumping?
 	
 	//Animation
 		
@@ -71,10 +73,12 @@ public class Player : MonoBehaviour {
 	{
 		Movement();
 		SideCheck();
-		//BottomCheck();
+		BottomCheck();
 
 		if(Input.GetKey(KeyCode.R))
 			Application.LoadLevel(Application.loadedLevel);
+			//camera.GetComponent<Camera>().playerFell = true;
+
 	}
 	
 	void Movement ()
@@ -82,11 +86,14 @@ public class Player : MonoBehaviour {
 		CharacterController controller = GetComponent<CharacterController>();//Need this so we can reference the character controller component
 		
 		//On the ground
-			if(controller.isGrounded)	
+			//if(controller.isGrounded)	
+				//OnGround();
+			if(grounded)
 				OnGround();
 		
 		//In the air
-			if(!controller.isGrounded)
+			//if(!controller.isGrounded)
+			if(!grounded)
 				InAir();
 		
 		controller.Move(velocity*Time.deltaTime);//Always moving at current velocity
@@ -94,13 +101,37 @@ public class Player : MonoBehaviour {
 			Application.LoadLevel(Application.loadedLevel);
 	}
 	
-	void OnGround ()
+//	void OnGround ()
+//	{
+//		if(platSpawner.GetComponent<Cycle>().platMove)
+//			PlayAnimation("Walk",2.5f);
+//		else
+//			PlayAnimation("Idle",.7f);
+//		isDouble = false;
+//		velocity.y = -3;
+//		if(Input.GetKeyDown(KeyCode.Space)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
+//		{
+//			if(!gameStart)
+//			{
+//				platSpawner.GetComponent<Cycle>().platMove = true;
+//				gameStart = true;
+//			}
+//			else
+//			{
+//				velocity.y = 0;
+//				velocity.y += jumpSpeed;
+//				PlayAnimation("Jump",1);
+//			}
+//		}
+//	}
+	
+	void OnGround()
 	{
 		if(platSpawner.GetComponent<Cycle>().platMove)
 			PlayAnimation("Walk",2.5f);
 		else
 			PlayAnimation("Idle",.7f);
-		isDouble = false;
+		isDouble = true;
 		velocity.y = -3;
 		if(Input.GetKeyDown(KeyCode.Space)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
 		{
@@ -111,10 +142,17 @@ public class Player : MonoBehaviour {
 			}
 			else
 			{
+				grounded = false;
 				velocity.y = 0;
 				velocity.y += jumpSpeed;
 				PlayAnimation("Jump",1);
+				
 			}
+		}
+		else
+		{
+			if(!gameStart)
+				isDouble = false;
 		}
 	}
 	
@@ -145,8 +183,8 @@ public class Player : MonoBehaviour {
 		Vector3 playerTop = new Vector3(transform.position.x,transform.position.y+.5f,transform.position.z); //Top of player
 		Vector3 playerBottom = new Vector3(transform.position.x,transform.position.y-.5f,transform.position.z);//Bottom of player
 		//Check for collisions against platform sides
-			//Debug.DrawRay(playerTop,transform.forward,Color.red,.5f);//used to draw show the raycast's path
-			//Debug.DrawRay(playerBottom,transform.forward,Color.red,.5f);
+			Debug.DrawRay(playerTop,transform.forward,Color.red,.5f);//used to draw show the raycast's path
+			Debug.DrawRay(playerBottom,transform.forward,Color.red,.5f);
 			if(Physics.Raycast(playerTop,transform.forward,.5f,platLayer)||(Physics.Raycast(playerBottom,transform.forward,.5f,platLayer)))
 			{
 				isDouble = true;
@@ -155,16 +193,19 @@ public class Player : MonoBehaviour {
 	}
 	
 	void BottomCheck()
-	{
-		CharacterController controller = GetComponent<CharacterController>();
-		
-		Vector3 playerBottom = new Vector3(transform.position.x,transform.position.y-.29f,transform.position.z-.3f);
-		Debug.DrawRay(transform.position,-transform.up,Color.red,.5f);//used to draw show the raycast's path
-		if(Physics.Raycast(playerBottom,-transform.up,.24f,platLayer))
+	{		
+		Vector3 playerFront = new Vector3(transform.position.x,transform.position.y,transform.position.z + .15f);
+		Vector3 playerBack = new Vector3(transform.position.x,transform.position.y,transform.position.z - .15f);
+		Debug.DrawRay(playerFront,-transform.up,Color.red,.7f);//used to draw show the raycast's path
+		Debug.DrawRay(playerBack,-transform.up,Color.red,7f);//used to draw show the raycast's path
+		if(Physics.Raycast(playerFront,-transform.up,.7f,platLayer)||(Physics.Raycast(playerBack,-transform.up,.7f,platLayer)))
+			grounded = true;
+		else
 		{
-			platSpawner.GetComponent<Cycle>().platMove = true;
-			//if(!controller.isGrounded)
-				velocity.y ++;
+			if(grounded)
+				isDouble = false;
+			grounded = false;
+			
 		}
 	}
 	
@@ -172,6 +213,13 @@ public class Player : MonoBehaviour {
 	{
 		model.animation[name].speed = speed;
 		model.animation.Play(name);
+	}
+	
+	IEnumerator Timer(float waitTime,string function)
+	{
+		yield return new WaitForSeconds(waitTime);
+		if(function == "Jump")
+			isDouble=false;
 	}
 	
 	bool RandomBool()
