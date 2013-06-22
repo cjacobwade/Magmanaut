@@ -84,15 +84,8 @@ public class Player : MonoBehaviour {
 	void Movement ()
 	{
 		CharacterController controller = GetComponent<CharacterController>();//Need this so we can reference the character controller component
-		
-		//On the ground
-			//if(controller.isGrounded)	
-				//OnGround();
 			if(grounded)
 				OnGround();
-		
-		//In the air
-			//if(!controller.isGrounded)
 			else
 				InAir();
 		
@@ -132,7 +125,7 @@ public class Player : MonoBehaviour {
 		else
 			PlayAnimation("Idle",.7f);
 		isDouble = true;
-		velocity.y = -3;
+		//velocity.y = -3;
 		if(Input.GetKeyDown(KeyCode.Space)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
 		{
 			if(!gameStart)
@@ -179,7 +172,7 @@ public class Player : MonoBehaviour {
 		//Check for collisions against platform sides
 			Debug.DrawRay(playerTop,transform.forward,Color.red,.5f);//used to draw show the raycast's path
 			Debug.DrawRay(playerBottom,transform.forward,Color.red,.5f);
-			if(Physics.Raycast(playerTop,transform.forward,.5f,platLayer)||(Physics.Raycast(playerBottom,transform.forward,.5f,platLayer)))
+			if(Physics.Raycast(playerTop,transform.forward,.7f,platLayer)||(Physics.Raycast(playerBottom,transform.forward,.5f,platLayer)))
 			{
 				isDouble = true;
 				platSpawner.GetComponent<Cycle>().platMove = false;
