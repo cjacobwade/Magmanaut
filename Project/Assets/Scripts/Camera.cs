@@ -18,7 +18,7 @@ public class Camera : MonoBehaviour {
 	//GUI Skins
 		public GUISkin transparentBorder;
 		public GUISkin skinScore;
-		public GUISkin fallScreenScore;
+		public GUISkin fallScreenScore,fallScreenScoreHeading;
 	
 	//Score
 		public int scoreRate;//rate of change
@@ -115,10 +115,13 @@ public class Camera : MonoBehaviour {
 				StartCoroutine(FailTimer(1));
 				displayScore = false;
 				GUI.DrawTexture(new Rect((Screen.width/2)-(menuOutlineSizeY/2),menuOutlineYOffset,menuOutlineSizeY,menuOutlineSizeY),fallOutline);//Fall Background Square}
+				GUI.skin = fallScreenScoreHeading;
+				GUI.Label(new Rect(Screen.width/2-85,300,400,400),"SCORE");
+				GUI.Label(new Rect(Screen.width/2-117,450,400,400),"HI-SCORE");
 				GUI.skin = fallScreenScore;
 				if (currentScore > 10000000)
 					fallScreenScore.label.fontSize = 55;
-				GUI.Label(new Rect(Screen.width/2-(menuOutlineSizeY/1.42f),360,400,400)," " + currentScore);
+				GUI.Label(new Rect(Screen.width/2-(menuOutlineSizeY/1.42f),340,400,400)," " + currentScore);
 				
 			// Home/Restart Buttons
 				GUI.skin = transparentBorder;	
