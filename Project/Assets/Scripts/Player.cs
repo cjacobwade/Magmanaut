@@ -64,8 +64,7 @@ public class Player : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
-
-		currentHealth = maxHealth;
+		//currentHealth = maxHealth;
 	}
 	
 	// Update is called once per frame
@@ -93,30 +92,6 @@ public class Player : MonoBehaviour {
 		if(transform.position.y < -3)//If fell off, restart level #Need to modularize in case levels would let you fall far or go higher up
 			gameCamera.GetComponent<Camera>().playerFell = true;
 	}
-	
-//	void OnGround ()
-//	{
-//		if(platSpawner.GetComponent<Cycle>().platMove)
-//			PlayAnimation("Walk",2.5f);
-//		else
-//			PlayAnimation("Idle",.7f);
-//		isDouble = false;
-//		velocity.y = -3;
-//		if(Input.GetKeyDown(KeyCode.Space)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
-//		{
-//			if(!gameStart)
-//			{
-//				platSpawner.GetComponent<Cycle>().platMove = true;
-//				gameStart = true;
-//			}
-//			else
-//			{
-//				velocity.y = 0;
-//				velocity.y += jumpSpeed;
-//				PlayAnimation("Jump",1);
-//			}
-//		}
-//	}
 	
 	void OnGround()
 	{
