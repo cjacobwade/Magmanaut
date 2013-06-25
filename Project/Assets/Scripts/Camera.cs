@@ -13,7 +13,7 @@ public class Camera : MonoBehaviour {
 		Texture2D currenthomeButton;
 		Texture2D currentPlayButton;
 		Texture2D currentButton;
-		public Texture2D fallOutline,fallRestart,fallRestart_pressed,fallHome,fallHome_pressed;
+		public Texture2D fallOutline,fallRestart,fallRestart_pressed,fallHome,fallHome_pressed,currentFallHome,currentFallRestart;
 	
 	//GUI Skins
 		public GUISkin transparentBorder;
@@ -25,25 +25,49 @@ public class Camera : MonoBehaviour {
 		bool displayScore = true;
 		string stringScore;
 	
+	//Fall Screen
+		float fallButtonsXPOS;
+		float fallRestartYPOS;
+		float fallHomeYPOS;
+	
 	//Other
 		Vector2 mousePos;
 		public float waitTime;//time between changes
 		public float buttonSizeDivisor,menuSizeDivisor;	
-		private float buttonSizeX,menuOutlineSizeY,menuOutlineYOffset;
+		private float pausebuttonSizeX,menuOutlineSizeY,menuOutlineYOffset;
 		public bool playerFell;
+		private bool pauseScreen,fellScreen;
 	
 	void Start () 
 	{
+	//Start timer
 		StartCoroutine(ScoreTimer(waitTime));
+		
 		Time.timeScale = 1;
+		Screen.orientation = ScreenOrientation.Landscape;
+		
+	// Whether to display pause popup or player fell popup
+		pauseScreen = true;
+		fellScreen = false;
+		
+	//Display Score
 		stringScore = "Score: " + currentScore;
+		
+	//Button hover
 		currentButton = pauseButton;
 		currenthomeButton = homeButton;
 		currentPlayButton = playButton;
-		Screen.orientation = ScreenOrientation.Landscape;
-		buttonSizeX = Screen.width / buttonSizeDivisor;
+		currentFallHome = fallHome;
+		currentFallRestart = fallRestart;
+		
+	//Pause/Fall Screen Size and offset from top of screen
 		menuOutlineSizeY = Screen.height / menuSizeDivisor;
 		menuOutlineYOffset = (Screen.height - menuOutlineSizeY)/2;
+	
+	//Button Sizes and placement
+		pausebuttonSizeX = Screen.width / buttonSizeDivisor;
+		
+	
 	}
 	
 	// Update is called once per frame
@@ -51,26 +75,46 @@ public class Camera : MonoBehaviour {
 	{
 		CheckHomeButton();
 		CheckPlayButton();
+		CheckFallRestartButton();
+		CheckFallHomeButton();
 		DisplayScore();
 	}
 	
 	void OnGUI()
 	{
+		fallRestartYPOS = (Screen.height-menuOutlineYOffset*5-(fallHome.height));
+		fallHomeYPOS = (Screen.height-menuOutlineYOffset*2-(fallHome.height));
 		GUI.skin = transparentBorder;	
 		
 		if (Time.timeScale == 0)//IF PAUSED
 		{
 			GUI.DrawTexture(new Rect(0,0,Screen.width,Screen.height),menuBG);//Transparent Background
-			GUI.DrawTexture(new Rect((Screen.width/2)-(menuOutlineSizeY/2),menuOutlineYOffset,menuOutlineSizeY,menuOutlineSizeY),menuBorder);//Pause Background Square
-			if (GUI.Button(new Rect((Screen.width/2)-(buttonSizeX/2),Screen.height/2.35f-((buttonSizeX/2)/2),buttonSizeX,buttonSizeX/2),currentPlayButton)) // Play Button
+			
+			if (pauseScreen)
 			{
-				displayScore = true;
-				Time.timeScale = 1;
-				currentButton = pauseButton;
-				StartCoroutine(ScoreTimer (waitTime));
+			GUI.DrawTexture(new Rect((Screen.width/2)-(menuOutlineSizeY/2),menuOutlineYOffset,menuOutlineSizeY,menuOutlineSizeY),menuBorder);//Pause Background Square
+				if (GUI.Button(new Rect((Screen.width/2)-(pausebuttonSizeX/2),Screen.height/2.35f-((pausebuttonSizeX/2)/2),pausebuttonSizeX,pausebuttonSizeX/2),currentPlayButton)) // Play Button
+				{
+					displayScore = true;
+					Time.timeScale = 1;
+					currentButton = pauseButton;
+					StartCoroutine(ScoreTimer (waitTime));
+				}
+			
+				if (GUI.Button(new Rect((Screen.width/2)-(pausebuttonSizeX/2),Screen.height/1.35f-((pausebuttonSizeX/2)/2),pausebuttonSizeX,pausebuttonSizeX/2),currenthomeButton)) // Home Button
+					Application.LoadLevel("StartScreen");
 			}
-			if (GUI.Button(new Rect((Screen.width/2)-(buttonSizeX/2),Screen.height/1.35f-((buttonSizeX/2)/2),buttonSizeX,buttonSizeX/2),currenthomeButton)) // Home Button
-				Application.LoadLevel("StartScreen");
+			
+			if (fellScreen)
+			{
+				StartCoroutine(FailTimer(1));
+				displayScore = false;
+					GUI.DrawTexture(new Rect((Screen.width/2)-(menuOutlineSizeY/2),menuOutlineYOffset,menuOutlineSizeY,menuOutlineSizeY),fallOutline);//Fall Background Square}
+					if(GUI.Button(new Rect((Screen.width/2),fallRestartYPOS,(menuOutlineSizeY/2),menuOutlineSizeY/4),currentFallRestart))
+						Application.LoadLevel(Application.loadedLevel);
+					if(GUI.Button(new Rect((Screen.width/2),fallHomeYPOS,(menuOutlineSizeY/2),menuOutlineSizeY/4),currentFallHome))
+						Application.LoadLevel("StartScreen");
+			}
 		}
 		
 		// Pause button
@@ -86,13 +130,9 @@ public class Camera : MonoBehaviour {
 		
 		if(playerFell)
 		{
-			StartCoroutine(FailTimer(1));
-			if(!displayScore)
-			{
-				GUI.DrawTexture(new Rect((Screen.width/2)-(menuOutlineSizeY/2),menuOutlineYOffset,menuOutlineSizeY,menuOutlineSizeY),fallOutline);//Fall Background Square}
-				if(Input.GetKeyDown(KeyCode.Space)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
-					Application.LoadLevel(Application.loadedLevel);
-			}
+			Time.timeScale = 0;
+			fellScreen = true;
+			pauseScreen = false;
 		}
 
 		GUI.skin = skinScore;
@@ -119,6 +159,28 @@ public class Camera : MonoBehaviour {
 		if ((mousePos.x > Screen.width/2.75f) && (mousePos.x < Screen.width/2.75f + 400) && (mousePos.y > Screen.height/3.5f+25) && (mousePos.y < Screen.height/3.5f + 170))
 			currentPlayButton = playButtonPressed;
 		else currentPlayButton = playButton;
+	}
+	
+	void CheckFallRestartButton() 
+	{
+		// Gets position of input
+		mousePos = new Vector2(Input.mousePosition.x, (Screen.height - Input.mousePosition.y));
+		
+		// Compares it against boundaries of the button
+		if ((mousePos.x > (Screen.width/2 + menuOutlineSizeY/25f)) && (mousePos.x < (Screen.width/2 + (menuOutlineSizeY/2)-(menuOutlineSizeY/25))) && (mousePos.y > fallRestartYPOS + menuOutlineSizeY/15) && (mousePos.y < fallRestartYPOS + (menuOutlineSizeY/4) - (menuOutlineSizeY/15)))
+			currentFallRestart = fallRestart_pressed;
+		else currentFallRestart = fallRestart;
+	}
+	
+	void CheckFallHomeButton() 
+	{
+		// Gets position of input
+		mousePos = new Vector2(Input.mousePosition.x, (Screen.height - Input.mousePosition.y));
+		
+		// Compares it against boundaries of the button
+		if ((mousePos.x > (Screen.width/2 + menuOutlineSizeY/25f)) && (mousePos.x < (Screen.width/2 + (menuOutlineSizeY/2)-(menuOutlineSizeY/25))) && (mousePos.y > fallHomeYPOS + menuOutlineSizeY/15) && (mousePos.y < fallHomeYPOS + (menuOutlineSizeY/4) - (menuOutlineSizeY/15)))
+			currentFallHome = fallHome_pressed;
+		else currentFallHome = fallHome;
 	}
 	
 	public IEnumerator ScoreTimer(float waitTime)
