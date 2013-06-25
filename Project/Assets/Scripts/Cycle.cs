@@ -88,10 +88,11 @@ public class Cycle : MonoBehaviour {
 	
 	void PlatPlan()
 	{
+		int platNum = Random.Range(1,3);
 		//choose which platform is going to spawn
-		nextPlat = basicPlat[1];
+		nextPlat = allPlats[platNum];
 		spawnHeight = Random.Range(heightMin,heightMax);
-		spawnDistance = allPlats[1].GetComponent<Platform>().platLength + Random.Range(distMin,distMax);//length of platform + random distance
+		spawnDistance = currentPlat.GetComponent<Platform>().platLength + Random.Range(distMin,distMax);//length of platform + random distance
 		readySpawn = true;
 	}
 	void PlatSpawn()
