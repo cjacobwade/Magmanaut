@@ -116,7 +116,9 @@ public class Camera : MonoBehaviour {
 				displayScore = false;
 				GUI.DrawTexture(new Rect((Screen.width/2)-(menuOutlineSizeY/2),menuOutlineYOffset,menuOutlineSizeY,menuOutlineSizeY),fallOutline);//Fall Background Square}
 				GUI.skin = fallScreenScore;
-				GUI.Label(new Rect(Screen.width/2-200,360,400,400)," " + currentScore);
+				GUI.Label(new Rect(Screen.width/2-(menuOutlineSizeY/1.4f),360,400,400)," " + currentScore);
+				
+			// Home/Restart Buttons
 				GUI.skin = transparentBorder;	
 				if(GUI.Button(new Rect((Screen.width/2),fallRestartYPOS,(menuOutlineSizeY/2),menuOutlineSizeY/4),currentFallRestart))
 					Application.LoadLevel(Application.loadedLevel);
@@ -144,7 +146,7 @@ public class Camera : MonoBehaviour {
 		}
 
 		GUI.skin = skinScore;
-		GUI.Label(new Rect(Screen.width/64,Screen.width/48,256,128), stringScore);
+		GUI.Label(new Rect(Screen.width/64,Screen.width/48,300,128), stringScore);
 	}
 	
 	void CheckHomeButton() 
