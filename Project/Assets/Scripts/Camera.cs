@@ -18,6 +18,7 @@ public class Camera : MonoBehaviour {
 	//GUI Skins
 		public GUISkin transparentBorder;
 		public GUISkin skinScore;
+		public GUISkin fallScreenScore;
 	
 	//Score
 		public int scoreRate;//rate of change
@@ -37,6 +38,7 @@ public class Camera : MonoBehaviour {
 		private float pausebuttonSizeX,menuOutlineSizeY,menuOutlineYOffset;
 		public bool playerFell;
 		private bool pauseScreen,fellScreen;
+		private float scoreLabelWidth;
 	
 	void Start () 
 	{
@@ -82,17 +84,19 @@ public class Camera : MonoBehaviour {
 	
 	void OnGUI()
 	{
-		fallRestartYPOS = (Screen.height-menuOutlineYOffset*5-(fallHome.height));
-		fallHomeYPOS = (Screen.height-menuOutlineYOffset*2-(fallHome.height));
+		fallRestartYPOS = (Screen.height-menuOutlineYOffset*7-(fallHome.height));
+		fallHomeYPOS = (Screen.height-menuOutlineYOffset*4-(fallHome.height));
 		GUI.skin = transparentBorder;	
 		
 		if (Time.timeScale == 0)//IF PAUSED
 		{
 			GUI.DrawTexture(new Rect(0,0,Screen.width,Screen.height),menuBG);//Transparent Background
 			
+		// Show PAUSE screen
 			if (pauseScreen)
 			{
 			GUI.DrawTexture(new Rect((Screen.width/2)-(menuOutlineSizeY/2),menuOutlineYOffset,menuOutlineSizeY,menuOutlineSizeY),menuBorder);//Pause Background Square
+				
 				if (GUI.Button(new Rect((Screen.width/2)-(pausebuttonSizeX/2),Screen.height/2.35f-((pausebuttonSizeX/2)/2),pausebuttonSizeX,pausebuttonSizeX/2),currentPlayButton)) // Play Button
 				{
 					displayScore = true;
@@ -105,15 +109,19 @@ public class Camera : MonoBehaviour {
 					Application.LoadLevel("StartScreen");
 			}
 			
+		// Show PLAYER FELL screen
 			if (fellScreen)
 			{
 				StartCoroutine(FailTimer(1));
 				displayScore = false;
-					GUI.DrawTexture(new Rect((Screen.width/2)-(menuOutlineSizeY/2),menuOutlineYOffset,menuOutlineSizeY,menuOutlineSizeY),fallOutline);//Fall Background Square}
-					if(GUI.Button(new Rect((Screen.width/2),fallRestartYPOS,(menuOutlineSizeY/2),menuOutlineSizeY/4),currentFallRestart))
-						Application.LoadLevel(Application.loadedLevel);
-					if(GUI.Button(new Rect((Screen.width/2),fallHomeYPOS,(menuOutlineSizeY/2),menuOutlineSizeY/4),currentFallHome))
-						Application.LoadLevel("StartScreen");
+				GUI.DrawTexture(new Rect((Screen.width/2)-(menuOutlineSizeY/2),menuOutlineYOffset,menuOutlineSizeY,menuOutlineSizeY),fallOutline);//Fall Background Square}
+				GUI.skin = fallScreenScore;
+				GUI.Label(new Rect(Screen.width/2-200,360,400,400)," " + currentScore);
+				GUI.skin = transparentBorder;	
+				if(GUI.Button(new Rect((Screen.width/2),fallRestartYPOS,(menuOutlineSizeY/2),menuOutlineSizeY/4),currentFallRestart))
+					Application.LoadLevel(Application.loadedLevel);
+				if(GUI.Button(new Rect((Screen.width/2),fallHomeYPOS,(menuOutlineSizeY/2),menuOutlineSizeY/4),currentFallHome))
+					Application.LoadLevel("StartScreen");
 			}
 		}
 		
