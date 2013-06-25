@@ -132,7 +132,7 @@ public class Camera : MonoBehaviour {
 		// Pause button
 		if(Time.timeScale == 1)
 		{
-			if(GUI.Button(new Rect(Screen.width-(Screen.width/7.7f),Screen.height/9,Screen.width/7,Screen.height/7),currentButton))
+			if(GUI.Button(new Rect(Screen.width-(Screen.width/7.7f),Screen.height/18,Screen.width/7,Screen.height/7),currentButton))
 			{	
 				displayScore = false;
 				Time.timeScale = 0;
