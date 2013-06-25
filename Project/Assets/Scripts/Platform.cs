@@ -21,25 +21,24 @@ public class Platform : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-
-			if(spawner.GetComponent<Cycle>().platMove)
-			{
-				if(tag == "Platform")
-					transform.Translate(new Vector3(0,0,-spawner.GetComponent<Cycle>().platMoveSpeed)*Time.deltaTime);//Move at a constant rate
-				if(tag == "Background")
-					transform.Translate(new Vector3(0,0,-spawner.GetComponent<Cycle>().backMoveSpeed)*Time.deltaTime);//Move at a constant rate
-			}
-			
+		if(spawner.GetComponent<Cycle>().platMove)
+		{
 			if(tag == "Platform")
-			{
-				if(transform.position.z < destroyer.transform.position.z)
-					Destroy(this.gameObject);
-			}
-		
+				transform.Translate(new Vector3(0,0,-spawner.GetComponent<Cycle>().platMoveSpeed)*Time.deltaTime);//Move at a constant rate
 			if(tag == "Background")
-			{
-				if(transform.position.z < bgDestroyer.transform.position.z)
-					Destroy(this.gameObject);
-			}
+				transform.Translate(new Vector3(0,0,-spawner.GetComponent<Cycle>().backMoveSpeed)*Time.deltaTime);//Move at a constant rate
+		}
+		
+		if(tag == "Platform")
+		{
+			if(transform.position.z < destroyer.transform.position.z)
+				Destroy(this.gameObject);
+		}
+	
+		if(tag == "Background")
+		{
+			if(transform.position.z < bgDestroyer.transform.position.z)
+				Destroy(this.gameObject);
+		}
 	}
 }

@@ -37,27 +37,8 @@ public class Cycle : MonoBehaviour {
 	
 	//"Procedural Generation"
 	
-		//'Randomly' select which piece to use
-			//Types of chunks:
-				//Size
-					//Small
-					//Medium
-					//Large
-					//Trap?
-					//Enemy/Boss
-				//Area
-					//Basic (Cavernous dark area - GOW)
-					//Cave (everything is dark but your path and possible paths)
-					//Lava (lit up by Magma - fight in OoT with Volvagia)
-					//Lake (Underwater lake - Pikmin or Dwemers in Skyrim)
-		//Placement
-			//Max, min distance to next chunks
-			//Max, min height of next chunks
-			//Max, min rotations of next chunks
-		//Spawning
-	
 			bool platSpawn = false;//Has the next platform been planned?
-			bool backSpawn = false;
+			public bool backSpawn;
 	
 			public float heightMin;//lowest y value of spawned plats
 			public float heightMax;// highest y value of spawned plat
