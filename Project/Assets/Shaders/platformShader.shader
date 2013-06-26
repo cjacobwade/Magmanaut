@@ -1,9 +1,11 @@
-Shader "ShaderEditor/EditorShaderCache"
+Shader "platformShader"
 {
 	Properties 
 	{
-_Color("Main Color", Color) = (1,1,1,1)
-_MainTex("Base (RGB) Gloss (A)", 2D) = "white" {}
+_Texture("_Texture", 2D) = "black" {}
+_RimColor("_RimColor", Color) = (1,1,1,1)
+_RimPower("_RimPower", Range(0.1,8) ) = 0.5
+_Minus("_Minus", Vector) = (1,1,1,1)
 
 	}
 	
@@ -31,8 +33,10 @@ Fog{
 #pragma target 2.0
 
 
-float4 _Color;
-sampler2D _MainTex;
+sampler2D _Texture;
+float4 _RimColor;
+float _RimPower;
+float4 _Minus;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
@@ -72,7 +76,7 @@ return c;
 			}
 			
 			struct Input {
-				float4 screenPos;
+				float2 uv_Texture;
 
 			};
 
@@ -95,8 +99,7 @@ float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
 				o.Specular = 0.0;
 				o.Custom = 0.0;
 				
-float4 Tex2D0=tex2D(_MainTex,((IN.screenPos.xy/IN.screenPos.w).xyxy).xy);
-float4 Add0=_Color + Tex2D0;
+float4 Tex2D0=tex2D(_Texture,(IN.uv_Texture.xyxy).xy);
 float4 Master0_1_NoInput = float4(0,0,1,1);
 float4 Master0_2_NoInput = float4(0,0,0,0);
 float4 Master0_3_NoInput = float4(0,0,0,0);
@@ -104,11 +107,11 @@ float4 Master0_4_NoInput = float4(0,0,0,0);
 float4 Master0_5_NoInput = float4(1,1,1,1);
 float4 Master0_7_NoInput = float4(0,0,0,0);
 float4 Master0_6_NoInput = float4(1,1,1,1);
-o.Albedo = Add0;
+o.Albedo = Tex2D0;
 
 				o.Normal = normalize(o.Normal);
 			}
 		ENDCG
 	}
-	Fallback "Diffuse"
+	Fallback "Lambert"
 }

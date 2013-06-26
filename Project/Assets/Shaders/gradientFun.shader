@@ -1,9 +1,9 @@
-Shader "ShaderEditor/EditorShaderCache"
+Shader "GradientFun"
 {
 	Properties 
 	{
-_Color("Main Color", Color) = (1,1,1,1)
-_MainTex("Base (RGB) Gloss (A)", 2D) = "white" {}
+_Color("Main Color", Color) = (1,0,0,1)
+_Color2("_Color2", Color) = (0,0,0,1)
 
 	}
 	
@@ -32,7 +32,7 @@ Fog{
 
 
 float4 _Color;
-sampler2D _MainTex;
+float4 _Color2;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
@@ -95,8 +95,11 @@ float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
 				o.Specular = 0.0;
 				o.Custom = 0.0;
 				
-float4 Tex2D0=tex2D(_MainTex,((IN.screenPos.xy/IN.screenPos.w).xyxy).xy);
-float4 Add0=_Color + Tex2D0;
+float4 Split0=((IN.screenPos.xy/IN.screenPos.w).xyxy);
+float4 Multiply1=_Color * float4( Split0.y, Split0.y, Split0.y, Split0.y);
+float4 Invert0= float4(1.0, 1.0, 1.0, 1.0) - float4( Split0.y, Split0.y, Split0.y, Split0.y);
+float4 Multiply0=_Color2 * Invert0;
+float4 Add0=Multiply1 + Multiply0;
 float4 Master0_1_NoInput = float4(0,0,1,1);
 float4 Master0_2_NoInput = float4(0,0,0,0);
 float4 Master0_3_NoInput = float4(0,0,0,0);

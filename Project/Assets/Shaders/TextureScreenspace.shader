@@ -1,4 +1,4 @@
-Shader "ShaderEditor/EditorShaderCache"
+Shader "TextureScreenspace"
 {
 	Properties 
 	{
