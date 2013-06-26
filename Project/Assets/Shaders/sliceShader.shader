@@ -1,12 +1,12 @@
-Shader "ShaderEditor/EditorShaderCache"
+Shader "SliceShader"
 {
 	Properties 
 	{
-_Glossiness("_Glossiness", Range(0.1,1) ) = 0.1
-_RimPower("_RimPower", Range(0.1,7) ) = 2.72
-_RimColor("_RimColor", Color) = (0,1,0.07692289,1)
-_SpecularColor("_SpecularColor", Color) = (1,1,1,1)
-_Diffuse("_Diffuse", 2D) = "black" {}
+_Color("_Color", Color) = (1,1,1,1)
+_Test("_Test", Range(0,50) ) = 0.5
+_RimStrength("_RimStrength", Range(0,8) ) = 2.08
+_RimColor("_RimColor", Color) = (1,1,1,1)
+_Texture("_Texture", 2D) = "black" {}
 
 	}
 	
@@ -34,11 +34,11 @@ Fog{
 #pragma target 2.0
 
 
-float _Glossiness;
-float _RimPower;
+float4 _Color;
+float _Test;
+float _RimStrength;
 float4 _RimColor;
-float4 _SpecularColor;
-sampler2D _Diffuse;
+sampler2D _Texture;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
@@ -78,8 +78,9 @@ return c;
 			}
 			
 			struct Input {
-				float2 uv_Diffuse;
-float3 viewDir;
+				float3 viewDir;
+float3 worldPos;
+float2 uv_Texture;
 
 			};
 
@@ -102,19 +103,22 @@ float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
 				o.Specular = 0.0;
 				o.Custom = 0.0;
 				
-float4 Tex2D0=tex2D(_Diffuse,(IN.uv_Diffuse.xyxy).xy);
 float4 Fresnel0_1_NoInput = float4(0,0,1,1);
 float4 Fresnel0=(1.0 - dot( normalize( float4( IN.viewDir.x, IN.viewDir.y,IN.viewDir.z,1.0 ).xyz), normalize( Fresnel0_1_NoInput.xyz ) )).xxxx;
-float4 Pow0=pow(Fresnel0,_RimPower.xxxx);
-float4 Multiply0=_RimColor * Pow0;
+float4 Pow0=pow(Fresnel0,_RimStrength.xxxx);
+float4 Multiply1=_RimColor * Pow0;
+float4 Splat1=float4( IN.worldPos.x, IN.worldPos.y,IN.worldPos.z,1.0 ).x;
+float4 Tex2D0=tex2D(_Texture,(IN.uv_Texture.xyxy).xy);
+float4 Multiply3=Splat1 * Tex2D0;
+float4 Subtract1=Multiply3 - Splat1;
+float4 Master0_0_NoInput = float4(0,0,0,0);
 float4 Master0_1_NoInput = float4(0,0,1,1);
 float4 Master0_3_NoInput = float4(0,0,0,0);
+float4 Master0_4_NoInput = float4(0,0,0,0);
 float4 Master0_5_NoInput = float4(1,1,1,1);
 float4 Master0_7_NoInput = float4(0,0,0,0);
-float4 Master0_6_NoInput = float4(1,1,1,1);
-o.Albedo = Tex2D0;
-o.Emission = Multiply0;
-o.Gloss = _SpecularColor;
+clip( Subtract1 );
+o.Emission = Multiply1;
 
 				o.Normal = normalize(o.Normal);
 			}
