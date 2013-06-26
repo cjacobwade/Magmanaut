@@ -1,12 +1,12 @@
-Shader "SliceShader"
+Shader "lavaShader"
 {
 	Properties 
 	{
-_Color("_Color", Color) = (1,1,1,1)
-_Test("_Test", Range(0,50) ) = 0.5
-_RimStrength("_RimStrength", Range(0,8) ) = 2.08
-_RimColor("_RimColor", Color) = (1,1,1,1)
-_Texture("_Texture", 2D) = "black" {}
+_LavaTexture("_LavaTexture", 2D) = "black" {}
+_X_Offset("_X_Offset", Float) = 0
+_Y_Offset("_Y_Offset", Float) = 0
+_Subtractor("_Subtractor", Range(0,1) ) = 0.5
+_Multiplier("_Multiplier", Range(0,50) ) = 0.5
 
 	}
 	
@@ -21,7 +21,7 @@ _Texture("_Texture", 2D) = "black" {}
 		}
 
 		
-Cull Back
+Cull Front
 ZWrite On
 ZTest LEqual
 ColorMask RGBA
@@ -34,11 +34,11 @@ Fog{
 #pragma target 2.0
 
 
-float4 _Color;
-float _Test;
-float _RimStrength;
-float4 _RimColor;
-sampler2D _Texture;
+sampler2D _LavaTexture;
+float _X_Offset;
+float _Y_Offset;
+float _Subtractor;
+float _Multiplier;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
@@ -78,9 +78,8 @@ return c;
 			}
 			
 			struct Input {
-				float3 viewDir;
+				float2 uv_LavaTexture;
 float3 worldPos;
-float2 uv_Texture;
 
 			};
 
@@ -103,22 +102,19 @@ float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
 				o.Specular = 0.0;
 				o.Custom = 0.0;
 				
-float4 Fresnel0_1_NoInput = float4(0,0,1,1);
-float4 Fresnel0=(1.0 - dot( normalize( float4( IN.viewDir.x, IN.viewDir.y,IN.viewDir.z,1.0 ).xyz), normalize( Fresnel0_1_NoInput.xyz ) )).xxxx;
-float4 Pow0=pow(Fresnel0,_RimStrength.xxxx);
-float4 Multiply1=_RimColor * Pow0;
-float4 Splat1=float4( IN.worldPos.x, IN.worldPos.y,IN.worldPos.z,1.0 ).x;
-float4 Tex2D0=tex2D(_Texture,(IN.uv_Texture.xyxy).xy);
-float4 Multiply3=Splat1 * Tex2D0;
-float4 Subtract1=Multiply3 - Splat1;
-float4 Master0_0_NoInput = float4(0,0,0,0);
+float4 Tex2D0=tex2D(_LavaTexture,(IN.uv_LavaTexture.xyxy).xy);
+float4 Splat0=float4( IN.worldPos.x, IN.worldPos.y,IN.worldPos.z,1.0 ).x;
+float4 Multiply0=Splat0 * _Multiplier.xxxx;
+float4 Frac0=frac(Multiply0);
+float4 Subtract0=Frac0 - _Subtractor.xxxx;
 float4 Master0_1_NoInput = float4(0,0,1,1);
+float4 Master0_2_NoInput = float4(0,0,0,0);
 float4 Master0_3_NoInput = float4(0,0,0,0);
 float4 Master0_4_NoInput = float4(0,0,0,0);
 float4 Master0_5_NoInput = float4(1,1,1,1);
 float4 Master0_7_NoInput = float4(0,0,0,0);
-clip( Subtract1 );
-o.Emission = Multiply1;
+clip( Subtract0 );
+o.Albedo = Tex2D0;
 
 				o.Normal = normalize(o.Normal);
 			}

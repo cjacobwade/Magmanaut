@@ -1,9 +1,8 @@
-Shader "ShaderEditor/EditorShaderCache"
+Shader "SliceShader"
 {
 	Properties 
 	{
 _Color("_Color", Color) = (1,1,1,1)
-_Test("_Test", Range(0,50) ) = 0.5
 _RimColor("_RimColor", Color) = (1,1,1,1)
 _RimPower("_RimPower", Range(0.1,3) ) = 0.5
 
@@ -13,9 +12,9 @@ _RimPower("_RimPower", Range(0.1,3) ) = 0.5
 	{
 		Tags
 		{
-"Queue"="Geometry"
+"Queue"="Transparent"
 "IgnoreProjector"="False"
-"RenderType"="Opaque"
+"RenderType"="Transparent"
 
 		}
 
@@ -24,6 +23,7 @@ Cull Front
 ZWrite On
 ZTest LEqual
 ColorMask RGBA
+Blend SrcAlpha OneMinusSrcAlpha
 Fog{
 }
 
@@ -34,7 +34,6 @@ Fog{
 
 
 float4 _Color;
-float _Test;
 float4 _RimColor;
 float _RimPower;
 
@@ -102,15 +101,15 @@ float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
 float4 Fresnel0_1_NoInput = float4(0,0,1,1);
 float4 Fresnel0=(1.0 - dot( normalize( float4( IN.viewDir.x, IN.viewDir.y,IN.viewDir.z,1.0 ).xyz), normalize( Fresnel0_1_NoInput.xyz ) )).xxxx;
 float4 Pow0=pow(Fresnel0,_RimPower.xxxx);
-float4 Multiply1=_RimColor * Pow0;
+float4 Divide0=_RimColor / Pow0;
 float4 Master0_1_NoInput = float4(0,0,1,1);
 float4 Master0_3_NoInput = float4(0,0,0,0);
 float4 Master0_4_NoInput = float4(0,0,0,0);
-float4 Master0_5_NoInput = float4(1,1,1,1);
 float4 Master0_7_NoInput = float4(0,0,0,0);
 float4 Master0_6_NoInput = float4(1,1,1,1);
 o.Albedo = _Color;
-o.Emission = Multiply1;
+o.Emission = Divide0;
+o.Alpha = Divide0;
 
 				o.Normal = normalize(o.Normal);
 			}
