@@ -145,8 +145,8 @@ public class Player : MonoBehaviour {
 		Vector3 playerTop = new Vector3(transform.position.x,transform.position.y+.5f,transform.position.z); //Top of player
 		Vector3 playerBottom = new Vector3(transform.position.x,transform.position.y-.5f,transform.position.z);//Bottom of player
 		//Check for collisions against platform sides
-			Debug.DrawRay(playerTop,transform.forward,Color.red,.5f);//used to draw show the raycast's path
-			Debug.DrawRay(playerBottom,transform.forward,Color.red,.5f);
+			//Debug.DrawRay(playerTop,transform.forward,Color.red,.5f);//used to draw show the raycast's path
+			//Debug.DrawRay(playerBottom,transform.forward,Color.red,.5f);
 			if(Physics.Raycast(playerTop,transform.forward,.7f,platLayer)||(Physics.Raycast(playerBottom,transform.forward,.5f,platLayer)))
 			{
 				isDouble = true;
@@ -158,8 +158,8 @@ public class Player : MonoBehaviour {
 	{		
 		Vector3 playerFront = new Vector3(transform.position.x,transform.position.y,transform.position.z + .15f);
 		Vector3 playerBack = new Vector3(transform.position.x,transform.position.y,transform.position.z - .15f);
-		Debug.DrawRay(playerFront,-transform.up,Color.red,.7f);//used to draw show the raycast's path
-		Debug.DrawRay(playerBack,-transform.up,Color.red,7f);//used to draw show the raycast's path
+		//Debug.DrawRay(playerFront,-transform.up,Color.red,.7f);//used to draw show the raycast's path
+		//Debug.DrawRay(playerBack,-transform.up,Color.red,7f);//used to draw show the raycast's path
 		if(Physics.Raycast(playerFront,-transform.up,.7f,platLayer)||(Physics.Raycast(playerBack,-transform.up,.7f,platLayer)))
 			grounded = true;
 		else

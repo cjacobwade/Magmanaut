@@ -32,13 +32,17 @@ public class Platform : MonoBehaviour {
 		if(tag == "Platform")
 		{
 			if(transform.position.z < destroyer.transform.position.z)
-				Destroy(this.gameObject);
+				//One of these is right...
+					gameObject.SetActive(false);
+					//Destroy(this.gameObject);
 		}
 	
 		if(tag == "Background")
 		{
 			if(transform.position.z < bgDestroyer.transform.position.z)
-				Destroy(this.gameObject);
+				//One of these is right...
+					gameObject.SetActive(false);
+					//Destroy(this.gameObject);
 		}
 	}
 }
