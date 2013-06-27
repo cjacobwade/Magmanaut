@@ -11,6 +11,7 @@ public class Player : MonoBehaviour {
 	
 	//Movement
 	
+		CharacterController controller;
 		public int moveSpeed;
 		public Vector3 velocity;
 		public bool gameStart;
@@ -64,6 +65,7 @@ public class Player : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
+		controller = GetComponent<CharacterController>();
 		//currentHealth = maxHealth;
 	}
 	
@@ -82,11 +84,11 @@ public class Player : MonoBehaviour {
 	
 	void Movement ()
 	{
-		CharacterController controller = GetComponent<CharacterController>();//Need this so we can reference the character controller component
-			if(grounded)
-				OnGround();
-			else
-				InAir();
+		//CharacterController controller = GetComponent<CharacterController>();//Need this so we can reference the character controller component
+		if(grounded)
+			OnGround();
+		else
+			InAir();
 		
 		controller.Move(velocity*Time.deltaTime);//Always moving at current velocity
 		if(transform.position.y < -3)//If fell off, restart level #Need to modularize in case levels would let you fall far or go higher up
