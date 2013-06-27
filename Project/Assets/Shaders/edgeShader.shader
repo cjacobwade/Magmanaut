@@ -14,9 +14,9 @@ _Diffuse("_Diffuse", 2D) = "black" {}
 	{
 		Tags
 		{
-			"Queue"="Geometry"
-			"IgnoreProjector"="False"
-			"RenderType"="Opaque"
+"Queue"="Geometry"
+"IgnoreProjector"="False"
+"RenderType"="Opaque"
 
 		}
 
@@ -52,11 +52,11 @@ sampler2D _Diffuse;
 			
 			inline half4 LightingBlinnPhongEditor_PrePass (EditorSurfaceOutput s, half4 light)
 			{
-				half3 spec = light.a * s.Gloss;
-				half4 c;
-				c.rgb = (s.Albedo * light.rgb + light.rgb * spec);
-				c.a = s.Alpha;
-				return c;
+half3 spec = light.a * s.Gloss;
+half4 c;
+c.rgb = (s.Albedo * light.rgb + light.rgb * spec);
+c.a = s.Alpha;
+return c;
 
 			}
 
@@ -79,15 +79,15 @@ sampler2D _Diffuse;
 			
 			struct Input {
 				float2 uv_Diffuse;
-				float3 viewDir;
+float3 viewDir;
 
 			};
 
 			void vert (inout appdata_full v, out Input o) {
-				float4 VertexOutputMaster0_0_NoInput = float4(0,0,0,0);
-				float4 VertexOutputMaster0_1_NoInput = float4(0,0,0,0);
-				float4 VertexOutputMaster0_2_NoInput = float4(0,0,0,0);
-				float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
+float4 VertexOutputMaster0_0_NoInput = float4(0,0,0,0);
+float4 VertexOutputMaster0_1_NoInput = float4(0,0,0,0);
+float4 VertexOutputMaster0_2_NoInput = float4(0,0,0,0);
+float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
 
 
 			}
@@ -102,19 +102,19 @@ sampler2D _Diffuse;
 				o.Specular = 0.0;
 				o.Custom = 0.0;
 				
-				float4 Tex2D0=tex2D(_Diffuse,(IN.uv_Diffuse.xyxy).xy);
-				float4 Fresnel0_1_NoInput = float4(0,0,1,1);
-				float4 Fresnel0=(1.0 - dot( normalize( float4( IN.viewDir.x, IN.viewDir.y,IN.viewDir.z,1.0 ).xyz), normalize( Fresnel0_1_NoInput.xyz ) )).xxxx;
-				float4 Pow0=pow(Fresnel0,_RimPower.xxxx);
-				float4 Multiply0=_RimColor * Pow0;
-				float4 Master0_1_NoInput = float4(0,0,1,1);
-				float4 Master0_3_NoInput = float4(0,0,0,0);
-				float4 Master0_5_NoInput = float4(1,1,1,1);
-				float4 Master0_7_NoInput = float4(0,0,0,0);
-				float4 Master0_6_NoInput = float4(1,1,1,1);
-				o.Albedo = Tex2D0;
-				o.Emission = Multiply0;
-				o.Gloss = _SpecularColor;
+float4 Tex2D0=tex2D(_Diffuse,(IN.uv_Diffuse.xyxy).xy);
+float4 Fresnel0_1_NoInput = float4(0,0,1,1);
+float4 Fresnel0=(1.0 - dot( normalize( float4( IN.viewDir.x, IN.viewDir.y,IN.viewDir.z,1.0 ).xyz), normalize( Fresnel0_1_NoInput.xyz ) )).xxxx;
+float4 Pow0=pow(Fresnel0,_RimPower.xxxx);
+float4 Multiply0=_RimColor * Pow0;
+float4 Master0_1_NoInput = float4(0,0,1,1);
+float4 Master0_3_NoInput = float4(0,0,0,0);
+float4 Master0_4_NoInput = float4(0,0,0,0);
+float4 Master0_5_NoInput = float4(1,1,1,1);
+float4 Master0_7_NoInput = float4(0,0,0,0);
+float4 Master0_6_NoInput = float4(1,1,1,1);
+o.Albedo = Tex2D0;
+o.Emission = Multiply0;
 
 				o.Normal = normalize(o.Normal);
 			}

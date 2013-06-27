@@ -1,11 +1,11 @@
-Shader "platformShader"
+Shader "GlowingEdges"
 {
 	Properties 
 	{
-_Texture("_Texture", 2D) = "black" {}
-_RimColor("_RimColor", Color) = (1,1,1,1)
-_RimPower("_RimPower", Range(0.1,8) ) = 0.5
-_Minus("_Minus", Vector) = (1,1,1,1)
+_RimPower("_RimPower", Range(0.1,7) ) = 2.72
+_Diffuse("_Diffuse", 2D) = "black" {}
+_Color1("_Color1", Color) = (1,0,0,1)
+_Color2("_Color2", Color) = (1,1,1,1)
 
 	}
 	
@@ -13,9 +13,9 @@ _Minus("_Minus", Vector) = (1,1,1,1)
 	{
 		Tags
 		{
-"Queue"="Geometry"
+"Queue"="Transparent-100"
 "IgnoreProjector"="False"
-"RenderType"="Opaque"
+"RenderType"="Transparent"
 
 		}
 
@@ -24,6 +24,7 @@ Cull Back
 ZWrite On
 ZTest LEqual
 ColorMask RGBA
+Blend SrcAlpha OneMinusSrcAlpha
 Fog{
 }
 
@@ -33,10 +34,10 @@ Fog{
 #pragma target 2.0
 
 
-sampler2D _Texture;
-float4 _RimColor;
 float _RimPower;
-float4 _Minus;
+sampler2D _Diffuse;
+float4 _Color1;
+float4 _Color2;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
@@ -76,7 +77,7 @@ return c;
 			}
 			
 			struct Input {
-				float2 uv_Texture;
+				float2 uv_Diffuse;
 
 			};
 
@@ -99,7 +100,7 @@ float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
 				o.Specular = 0.0;
 				o.Custom = 0.0;
 				
-float4 Tex2D0=tex2D(_Texture,(IN.uv_Texture.xyxy).xy);
+float4 Tex2D0=tex2D(_Diffuse,(IN.uv_Diffuse.xyxy).xy);
 float4 Master0_1_NoInput = float4(0,0,1,1);
 float4 Master0_2_NoInput = float4(0,0,0,0);
 float4 Master0_3_NoInput = float4(0,0,0,0);
@@ -113,5 +114,5 @@ o.Albedo = Tex2D0;
 			}
 		ENDCG
 	}
-	Fallback "Lambert"
+	Fallback "Diffuse"
 }
