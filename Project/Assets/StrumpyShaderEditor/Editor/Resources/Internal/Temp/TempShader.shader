@@ -2,8 +2,11 @@ Shader "ShaderEditor/EditorShaderCache"
 {
 	Properties 
 	{
-_Color("Main Color", Color) = (1,1,1,1)
-_MainTex("Base (RGB) Gloss (A)", 2D) = "white" {}
+_Glossiness("_Glossiness", Range(0.1,1) ) = 0.1
+_RimPower("_RimPower", Range(0.1,7) ) = 2.72
+_RimColor("_RimColor", Color) = (0,1,0.07692289,1)
+_SpecularColor("_SpecularColor", Color) = (1,1,1,1)
+_Diffuse("_Diffuse", 2D) = "black" {}
 
 	}
 	
@@ -31,8 +34,11 @@ Fog{
 #pragma target 2.0
 
 
-float4 _Color;
-sampler2D _MainTex;
+float _Glossiness;
+float _RimPower;
+float4 _RimColor;
+float4 _SpecularColor;
+sampler2D _Diffuse;
 
 			struct EditorSurfaceOutput {
 				half3 Albedo;
@@ -72,7 +78,8 @@ return c;
 			}
 			
 			struct Input {
-				float4 screenPos;
+				float2 uv_Diffuse;
+float3 viewDir;
 
 			};
 
@@ -95,16 +102,19 @@ float4 VertexOutputMaster0_3_NoInput = float4(0,0,0,0);
 				o.Specular = 0.0;
 				o.Custom = 0.0;
 				
-float4 Tex2D0=tex2D(_MainTex,((IN.screenPos.xy/IN.screenPos.w).xyxy).xy);
-float4 Add0=_Color + Tex2D0;
+float4 Tex2D0=tex2D(_Diffuse,(IN.uv_Diffuse.xyxy).xy);
+float4 Fresnel0_1_NoInput = float4(0,0,1,1);
+float4 Fresnel0=(1.0 - dot( normalize( float4( IN.viewDir.x, IN.viewDir.y,IN.viewDir.z,1.0 ).xyz), normalize( Fresnel0_1_NoInput.xyz ) )).xxxx;
+float4 Pow0=pow(Fresnel0,_RimPower.xxxx);
+float4 Multiply0=_RimColor * Pow0;
 float4 Master0_1_NoInput = float4(0,0,1,1);
-float4 Master0_2_NoInput = float4(0,0,0,0);
 float4 Master0_3_NoInput = float4(0,0,0,0);
-float4 Master0_4_NoInput = float4(0,0,0,0);
 float4 Master0_5_NoInput = float4(1,1,1,1);
 float4 Master0_7_NoInput = float4(0,0,0,0);
 float4 Master0_6_NoInput = float4(1,1,1,1);
-o.Albedo = Add0;
+o.Albedo = Tex2D0;
+o.Emission = Multiply0;
+o.Gloss = _SpecularColor;
 
 				o.Normal = normalize(o.Normal);
 			}
