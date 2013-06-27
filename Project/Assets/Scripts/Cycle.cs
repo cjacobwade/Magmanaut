@@ -58,6 +58,7 @@ public class Cycle : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
+		//Platform cycling
 		if(!platSpawn)
 			PlatPlan();
 		else
@@ -66,13 +67,15 @@ public class Cycle : MonoBehaviour {
 				PlatSpawn();
 		}
 		
-		if(!backSpawn)
-			BackPlan();
-		else
-		{
-			if(Vector3.Distance(currentBack.transform.position,transform.position)>=backSpawnDistance)
-				BackSpawn();
-		}
+		
+		//Background cycling
+//		if(!backSpawn)
+//			BackPlan();
+//		else
+//		{
+//			if(Vector3.Distance(currentBack.transform.position,transform.position)>=backSpawnDistance)
+//				BackSpawn();
+//		}
 	}
 	
 	void PlatPlan()

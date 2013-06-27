@@ -19,12 +19,20 @@ public class Player : MonoBehaviour {
 	//Jumping
 	
 		public LayerMask platLayer;//which layer are the platforms on
+		public Vector3 actualSpeed;
 		public int jumpSpeed;
 		public int doubleSpeed;//double jump speed
 		public int gravitySpeed;
 		public bool grounded = false;
 		public bool isJump = false;
 		public bool isDouble = false;//double jumping?
+		public bool botCollide;
+		public bool sideCollide;
+
+		Vector3 playerFront;
+		Vector3 playerBack;
+		Vector3 playerTop; //Top of player
+		Vector3 playerBottom;//Bottom of player
 	
 	//Animation
 		
@@ -63,19 +71,23 @@ public class Player : MonoBehaviour {
 		//Sensitivity?
 	
 	// Use this for initialization
-	void Start () 
+	void Awake() 
 	{
 		controller = GetComponent<CharacterController>();
+		controller.detectCollisions = false;
 		//currentHealth = maxHealth;
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
+		controller.detectCollisions = false;
+		if(velocity.y<-9.8)
+			velocity.y = -9.8f;
+		actualSpeed = controller.velocity;//for debugging
 		Movement();
 		SideCheck();
 		BottomCheck();
-
 		if(Input.GetKey(KeyCode.R))
 			Application.LoadLevel(Application.loadedLevel);
 			//gameCamera.GetComponent<Camera>().playerFell = true;
@@ -84,13 +96,13 @@ public class Player : MonoBehaviour {
 	
 	void Movement ()
 	{
+		controller.Move(velocity*Time.deltaTime);//Always moving at current velocity
 		//CharacterController controller = GetComponent<CharacterController>();//Need this so we can reference the character controller component
 		if(grounded)
 			OnGround();
 		else
 			InAir();
 		
-		controller.Move(velocity*Time.deltaTime);//Always moving at current velocity
 		if(transform.position.y < -3)//If fell off, restart level #Need to modularize in case levels would let you fall far or go higher up
 			gameCamera.GetComponent<Camera>().playerFell = true;
 	}
@@ -116,7 +128,7 @@ public class Player : MonoBehaviour {
 				velocity.y = 0;
 				velocity.y += jumpSpeed;
 				PlayAnimation("Jump",1);
-				StartCoroutine(Timer(.05f,"Jump"));
+				StartCoroutine(Timer(.1f,"Jump"));
 			}
 		}
 	}
@@ -126,6 +138,7 @@ public class Player : MonoBehaviour {
 		if(!model.animation["Jump"].enabled && !model.animation["Spin"].enabled && !model.animation["Spin2"].enabled)
 			PlayAnimation("Fall",.5f);
 		velocity.y += gravitySpeed*Time.deltaTime;
+		botCollide = false;
 		if(!isDouble)
 		{
 			if(Input.GetKeyDown(KeyCode.Space)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
@@ -143,25 +156,31 @@ public class Player : MonoBehaviour {
 	
 	void SideCheck ()
 	{
-	
-		Vector3 playerTop = new Vector3(transform.position.x,transform.position.y+.5f,transform.position.z); //Top of player
-		Vector3 playerBottom = new Vector3(transform.position.x,transform.position.y-.5f,transform.position.z);//Bottom of player
-		//Check for collisions against platform sides
-			//Debug.DrawRay(playerTop,transform.forward,Color.red,.5f);//used to draw show the raycast's path
-			//Debug.DrawRay(playerBottom,transform.forward,Color.red,.5f);
-			if(Physics.Raycast(playerTop,transform.forward,.7f,platLayer)||(Physics.Raycast(playerBottom,transform.forward,.5f,platLayer)))
-			{
-				isDouble = true;
-				platSpawner.GetComponent<Cycle>().platMove = false;
-			}
+		playerTop = new Vector3(transform.position.x,transform.position.y+.5f,transform.position.z); //Top of player
+		playerBottom = new Vector3(transform.position.x,transform.position.y-.55f,transform.position.z);//Bottom of player
+		playerFront = new Vector3(transform.position.x,transform.position.y+.5f,transform.position.z+.5f);
+
+		//Debug
+			Debug.DrawRay(playerTop,transform.forward,Color.red,0);//used to draw show the raycast's path
+			Debug.DrawRay(playerBottom,transform.forward,Color.red,0);
+			Debug.DrawRay(playerFront,-transform.up,Color.green,0);//For debug only
+		if(Physics.Raycast(playerTop,transform.forward,.5f,platLayer)||(Physics.Raycast(playerBottom,transform.forward,.5f,platLayer)))
+		{
+			isDouble = true;
+			platSpawner.GetComponent<Cycle>().platMove = false;
+		}
 	}
 	
 	void BottomCheck()
 	{		
-		Vector3 playerFront = new Vector3(transform.position.x,transform.position.y,transform.position.z + .15f);
-		Vector3 playerBack = new Vector3(transform.position.x,transform.position.y,transform.position.z - .15f);
-		//Debug.DrawRay(playerFront,-transform.up,Color.red,.7f);//used to draw show the raycast's path
-		//Debug.DrawRay(playerBack,-transform.up,Color.red,7f);//used to draw show the raycast's path
+		playerFront = new Vector3(transform.position.x,transform.position.y,transform.position.z + .15f);
+		playerBack = new Vector3(transform.position.x,transform.position.y,transform.position.z - .15f);
+		playerBottom = new Vector3(transform.position.x,transform.position.y -.55f,transform.position.z + .15f);//For debug only
+		
+		//Debug
+			Debug.DrawRay(playerFront,-transform.up,Color.red,0);//used to draw show the raycast's path
+			Debug.DrawRay(playerBack,-transform.up,Color.red,0);//used to draw show the raycast's path
+			Debug.DrawRay(playerBottom,-transform.forward,Color.green,0);//used to draw show the raycast's path
 		if(Physics.Raycast(playerFront,-transform.up,.7f,platLayer)||(Physics.Raycast(playerBack,-transform.up,.7f,platLayer)))
 			grounded = true;
 		else
