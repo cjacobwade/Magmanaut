@@ -30,6 +30,7 @@ public class Camera : MonoBehaviour {
 		float fallButtonsXPOS;
 		float fallRestartYPOS;
 		float fallHomeYPOS;
+		float screenDPI;
 	
 	//Other
 		Vector2 mousePos;
@@ -69,7 +70,7 @@ public class Camera : MonoBehaviour {
 	//Button Sizes and placement
 		pausebuttonSizeX = Screen.width / buttonSizeDivisor;
 		
-	
+		screenDPI = Screen.dpi;
 	}
 	
 	// Update is called once per frame
@@ -116,18 +117,24 @@ public class Camera : MonoBehaviour {
 				displayScore = false;
 				GUI.DrawTexture(new Rect((Screen.width/2)-(menuOutlineSizeY/2),menuOutlineYOffset,menuOutlineSizeY,menuOutlineSizeY),fallOutline);//Fall Background Square}
 				GUI.skin = fallScreenScoreHeading;
-				GUI.Label(new Rect(Screen.width/2-85,300,400,400),"SCORE");
-				GUI.Label(new Rect(Screen.width/2-117,450,400,400),"HI-SCORE");
+				if (Screen.dpi < 250)
+					fallScreenScoreHeading.label.fontSize = 25;
+				else fallScreenScoreHeading.label.fontSize = 35;
+				GUI.Label(new Rect(Screen.width/2+Screen.width/64,Screen.height/2,400,400),"SCORE");
+				GUI.Label(new Rect(Screen.width/2+Screen.width/64,Screen.height/1.4f,400,400),"HI-SCORE");
 				GUI.skin = fallScreenScore;
 				if (currentScore > 10000000)
 					fallScreenScore.label.fontSize = 55;
-				GUI.Label(new Rect(Screen.width/2-(menuOutlineSizeY/1.42f),340,400,400)," " + currentScore);
+				GUI.Label(new Rect(Screen.width/2+Screen.width/64,Screen.height/1.8f,400,400)," " + currentScore);
+				if (currentScore > PlayerPrefs.GetFloat("Player Score"))
+					PlayerPrefs.SetFloat("Player Score", currentScore);
+				GUI.Label(new Rect(Screen.width/2+Screen.width/64,Screen.height/1.3f,400,400)," " + PlayerPrefs.GetFloat("Player Score"));
 				
 			// Home/Restart Buttons
 				GUI.skin = transparentBorder;	
-				if(GUI.Button(new Rect((Screen.width/2),fallRestartYPOS,(menuOutlineSizeY/2),menuOutlineSizeY/4),currentFallRestart))
+				if(GUI.Button(new Rect((Screen.width/2)-menuOutlineSizeY/2.05f,fallRestartYPOS,(menuOutlineSizeY/2),menuOutlineSizeY/4),currentFallRestart))
 					Application.LoadLevel(Application.loadedLevel);
-				if(GUI.Button(new Rect((Screen.width/2),fallHomeYPOS,(menuOutlineSizeY/2),menuOutlineSizeY/4),currentFallHome))
+				if(GUI.Button(new Rect((Screen.width/2)-menuOutlineSizeY/2.05f,fallHomeYPOS,(menuOutlineSizeY/2),menuOutlineSizeY/4),currentFallHome))
 					Application.LoadLevel("StartScreen");
 			}
 		}
@@ -182,7 +189,7 @@ public class Camera : MonoBehaviour {
 		mousePos = new Vector2(Input.mousePosition.x, (Screen.height - Input.mousePosition.y));
 		
 		// Compares it against boundaries of the button
-		if ((mousePos.x > (Screen.width/2 + menuOutlineSizeY/25f)) && (mousePos.x < (Screen.width/2 + (menuOutlineSizeY/2)-(menuOutlineSizeY/25))) && (mousePos.y > fallRestartYPOS + menuOutlineSizeY/15) && (mousePos.y < fallRestartYPOS + (menuOutlineSizeY/4) - (menuOutlineSizeY/15)))
+		if ((mousePos.x > (Screen.width/2-menuOutlineSizeY/2.05f)) && (mousePos.x < ((Screen.width/2-menuOutlineSizeY/2.05f) + menuOutlineSizeY/2)) && (mousePos.y > fallRestartYPOS + menuOutlineSizeY/15) && (mousePos.y < fallRestartYPOS + (menuOutlineSizeY/4) - (menuOutlineSizeY/15)))
 			currentFallRestart = fallRestart_pressed;
 		else currentFallRestart = fallRestart;
 	}
@@ -193,7 +200,7 @@ public class Camera : MonoBehaviour {
 		mousePos = new Vector2(Input.mousePosition.x, (Screen.height - Input.mousePosition.y));
 		
 		// Compares it against boundaries of the button
-		if ((mousePos.x > (Screen.width/2 + menuOutlineSizeY/25f)) && (mousePos.x < (Screen.width/2 + (menuOutlineSizeY/2)-(menuOutlineSizeY/25))) && (mousePos.y > fallHomeYPOS + menuOutlineSizeY/15) && (mousePos.y < fallHomeYPOS + (menuOutlineSizeY/4) - (menuOutlineSizeY/15)))
+		if ((mousePos.x > (Screen.width/2-menuOutlineSizeY/2.05f)) && (mousePos.x < ((Screen.width/2-menuOutlineSizeY/2.05f) + menuOutlineSizeY/2)) && (mousePos.y > fallHomeYPOS + menuOutlineSizeY/15) && (mousePos.y < fallHomeYPOS + (menuOutlineSizeY/4) - (menuOutlineSizeY/15)))
 			currentFallHome = fallHome_pressed;
 		else currentFallHome = fallHome;
 	}
