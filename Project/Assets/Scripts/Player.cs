@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Player : MonoBehaviour {
 	
+#region Variable Declarations	
 	//Other
 	
 		public GameObject gameCamera;
@@ -24,11 +25,9 @@ public class Player : MonoBehaviour {
 		public int jumpSpeed;
 		public int doubleSpeed;//double jump speed
 		public int gravitySpeed;
-		public bool grounded = false;
-		public bool isJump = false;
-		public bool isDouble = false;//double jumping?
-		public bool botCollide;
-		public bool sideCollide;
+		public bool grounded;
+		public bool isDouble;//double jumping?
+		public bool isJumping;
 
 		Vector3 playerFront;
 		Vector3 playerBack;
@@ -71,18 +70,18 @@ public class Player : MonoBehaviour {
 		public Rect rightTouch;
 		//Sensitivity?
 	
+#endregion
+	
 	// Use this for initialization
 	void Awake() 
 	{
 		controller = GetComponent<CharacterController>();
 		controller.detectCollisions = false;
-		//currentHealth = maxHealth;
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
-		controller.detectCollisions = false;
 		if(velocity.y<-9.8)
 			velocity.y = -9.8f;
 		actualSpeed = controller.velocity;//for debugging
@@ -91,14 +90,13 @@ public class Player : MonoBehaviour {
 		BottomCheck();
 		if(Input.GetKey(KeyCode.R))
 			Application.LoadLevel(Application.loadedLevel);
-			//gameCamera.GetComponent<Camera>().playerFell = true;
-
 	}
 	
 	void Movement ()
 	{
 		controller.Move(velocity*Time.deltaTime);//Always moving at current velocity
-		//CharacterController controller = GetComponent<CharacterController>();//Need this so we can reference the character controller component
+
+		//Check to see if on platforms or in air
 		if(grounded)
 			OnGround();
 		else
@@ -110,12 +108,14 @@ public class Player : MonoBehaviour {
 	
 	void OnGround()
 	{
+		isJumping = false;
+		isDouble = true;
+		
 		if(platSpawner.GetComponent<Cycle>().platMove)
 			PlayAnimation("Walk",2.5f);
 		else
 			PlayAnimation("Idle",.7f);
-		isDouble = true;
-		//velocity.y = -3;
+		
 		if(Input.GetKeyDown(KeyCode.Space)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
 		{
 			if(!gameStart)
@@ -128,18 +128,27 @@ public class Player : MonoBehaviour {
 				grounded = false;
 				velocity.y = 0;
 				velocity.y += jumpSpeed;
-				PlayAnimation("Jump",1);
-				StartCoroutine(Timer(.1f,"Jump"));
 			}
 		}
 	}
 	
 	void InAir ()
 	{
+		if(!isJumping)
+		{
+			if(isDouble)
+			{
+				PlayAnimation("Jump",1f);
+				StartCoroutine(Timer(.1f,"Jump"));
+				isJumping = true;
+			}
+		}
+		
 		if(!model.animation["Jump"].enabled && !model.animation["Spin"].enabled && !model.animation["Spin2"].enabled)
+		{
 			PlayAnimation("Fall",.5f);
+		}
 		velocity.y += gravitySpeed*Time.deltaTime;
-		botCollide = false;
 		if(!isDouble)
 		{
 			if(Input.GetKeyDown(KeyCode.Space)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
@@ -186,8 +195,6 @@ public class Player : MonoBehaviour {
 			grounded = true;
 		else
 		{
-			if(grounded)
-				isDouble = false;
 			grounded = false;
 		}
 	}
@@ -202,7 +209,7 @@ public class Player : MonoBehaviour {
 	{
 		yield return new WaitForSeconds(waitTime);
 		if(function == "Jump")
-			isDouble=false;
+			isDouble = false;
 	}
 	
 	bool RandomBool()
