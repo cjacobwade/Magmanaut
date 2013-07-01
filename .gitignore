@@ -9,6 +9,11 @@
 *.userprefs
 *.sgraphs
 
+##TO FIX FAILED TO SYNC
+##*******************************
+##git status
+##git pull
+##discard changes on files that get listed
 
 
 #################

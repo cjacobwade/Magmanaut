@@ -138,9 +138,17 @@ public class Player : MonoBehaviour {
 		{
 			if(isDouble)
 			{
-				PlayAnimation("Jump",1f);
-				StartCoroutine(Timer(.1f,"Jump"));
-				isJumping = true;
+				if(velocity.y >= 0)
+				{
+					PlayAnimation("Jump",1f);
+					StartCoroutine(Timer(.1f,"Jump"));
+					isJumping = true;
+				}
+				else
+				{
+					isJumping = true;
+					isDouble = false;
+				}
 			}
 		}
 		
