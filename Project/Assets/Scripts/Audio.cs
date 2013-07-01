@@ -17,7 +17,7 @@ public class Audio : MonoBehaviour {
 	// Use this for initialization
 	void Awake () 
 	{
-		PlaySound(soundFX,soundFXSource,0,100,true);
+		PlaySound(0,0,100,true);
 	}
 	
 	// Update is called once per frame
@@ -26,17 +26,50 @@ public class Audio : MonoBehaviour {
 	
 	}
 	
-	void PlaySound(AudioClip[] library,AudioSource source,int index, int volume, bool loop)
+	public void PlaySound(int source,int index, int volume, bool loop)
 	{
-		source.clip = library[index];
-		source.volume = volume;
-		source.Play();
-		source.loop = loop;
+		switch(source)
+		{
+			case 1:
+			{
+				musicSource.clip = music[index];
+				musicSource.volume = volume;
+				musicSource.Play();
+				musicSource.loop = loop;
+				break;
+			}
+			
+			default:
+			{
+				soundFXSource.clip = soundFX[index];
+				soundFXSource.volume = volume;
+				soundFXSource.Play();
+				soundFXSource.loop = loop;
+				break;
+			}
+		};
+
 	}
 	
-	void PlaySound(AudioClip[] library,AudioSource source,int index, bool loop)
+	public void PlaySound(int source, int index, bool loop)
 	{
-		source.clip = library[index];
-		source.Play();
+		switch(source)
+		{
+			case 1:
+			{
+				musicSource.clip = music[index];
+				musicSource.Play();
+				musicSource.loop = loop;
+				break;
+			}
+			
+			default:
+			{
+				soundFXSource.clip = soundFX[index];
+				soundFXSource.Play();
+				soundFXSource.loop = loop;
+				break;
+			}
+		};
 	}
 }
