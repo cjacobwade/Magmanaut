@@ -4,6 +4,7 @@ using System.Collections;
 public class Platform : MonoBehaviour {
 	
 	GameObject spawner;
+	GameObject emptyHolder;
 	GameObject destroyer;
 	GameObject bgDestroyer;
 	public float platLength;
@@ -12,10 +13,8 @@ public class Platform : MonoBehaviour {
 	void Start () 
 	{
 		spawner = GameObject.Find("Spawner");
-		if(tag == "Platform")
-			destroyer = GameObject.Find("Destroyer");
-		if(tag == "Background")
-			bgDestroyer = GameObject.Find("BGDestroyer");
+		destroyer = GameObject.Find("Destroyer");
+		emptyHolder = GameObject.Find("EmptyHolder");
 	}
 	
 	// Update is called once per frame
@@ -28,21 +27,12 @@ public class Platform : MonoBehaviour {
 			if(tag == "Background")
 				transform.Translate(new Vector3(0,0,-spawner.GetComponent<Cycle>().backMoveSpeed)*Time.deltaTime);//Move at a constant rate
 		}
-		
-		if(tag == "Platform")
+		if(transform.position.z < destroyer.transform.position.z)
 		{
-			if(transform.position.z < destroyer.transform.position.z)
-				//One of these is right...
-					gameObject.SetActive(false);
-					//Destroy(this.gameObject);
-		}
-	
-		if(tag == "Background")
-		{
-			if(transform.position.z < bgDestroyer.transform.position.z)
-				//One of these is right...
-					gameObject.SetActive(false);
-					//Destroy(this.gameObject);
+			//One of these is right...
+				transform.parent = emptyHolder.transform;
+				gameObject.SetActive(false);
+				//Destroy(this.gameObject);
 		}
 	}
 }

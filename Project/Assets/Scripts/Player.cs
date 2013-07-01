@@ -8,6 +8,7 @@ public class Player : MonoBehaviour {
 		public GameObject gameCamera;
 		public GameObject model;
 		public GameObject platSpawner;
+		GameObject holder;
 	
 	//Movement
 	
