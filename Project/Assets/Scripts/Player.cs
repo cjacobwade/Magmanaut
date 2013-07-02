@@ -68,8 +68,9 @@ public class Player : MonoBehaviour {
 		public GameObject model;
 		public GameObject platSpawner;
 		public GameObject soundMaker;
-		public GameObject hand;
-		public GameObject hand2;
+		public GameObject leftHand;
+		public GameObject rightHand;
+		public TrailRenderer trail;
 		GameObject holder;
 	
 #endregion
@@ -233,13 +234,19 @@ public class Player : MonoBehaviour {
 	void SpinTrail()
 	{
 		if(model.animation["Spin2"].enabled)
-			hand.SetActive(true);
+		{
+			trail.transform.parent = leftHand.transform;
+			trail.transform.localPosition = Vector3.zero;
+			trail.startWidth = .15f;
+		}
+		else if(model.animation["Spin"].enabled)
+		{
+			trail.transform.parent = rightHand.transform;
+			trail.transform.localPosition = Vector3.zero;
+			trail.startWidth = .15f;
+		}
 		else
-			hand.SetActive(false);
-		if(model.animation["Spin"].enabled)
-			hand2.SetActive(true);
-		else
-			hand2.SetActive(false);
+			trail.startWidth = 0;
 	}
 	
 	void SideCheck ()
