@@ -58,6 +58,7 @@ public class Player : MonoBehaviour {
 	
 	//Swipe
 	
+		public Vector2 touchPos;
 		//public Rect leftTouch;//touch box boundaries
 		//public Rect rightTouch;
 		//Sensitivity?
@@ -83,17 +84,7 @@ public class Player : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		if(model.animation["Spin2"].enabled)
-			hand.SetActive(true);
-		else
-			hand.SetActive(false);
-		if(model.animation["Spin"].enabled)
-			hand2.SetActive(true);
-		else
-			hand2.SetActive(false);
-		if(velocity.y<-9.8)
-			velocity.y = -9.8f;
-		actualSpeed = controller.velocity;//for debugging
+		PlayerInput();
 		Movement();
 		SideCheck();
 		BottomCheck();
@@ -101,16 +92,101 @@ public class Player : MonoBehaviour {
 			Application.LoadLevel(Application.loadedLevel);
 	}
 	
+	void PlayerInput()
+	{
+		if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began && Input.GetTouch(0).position.x > (Screen.width-(Screen.width/7.7f))&& Input.GetTouch(0).position.y > (Screen.width-(Screen.width/7.7f)))
+		{
+			print ("Pause");
+			//pause the game
+		}
+		if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began && Input.GetTouch(0).position.x < (Screen.width-(Screen.width/7.7f))&& Input.GetTouch(0).position.y < (Screen.width-(Screen.width/7.7f)))
+		{
+			if(grounded)
+				Jump();
+			else
+			{
+				if(!isDouble)
+					DoubleJump();
+			}
+		}
+
+		if(Input.GetKeyDown(KeyCode.Space))
+		{
+			if(grounded)
+				Jump();
+			else
+			{
+				if(!isDouble)
+					DoubleJump();
+			}
+		}
+	}
+	
+	void Jump()
+	{
+		if(!gameStart)
+		{
+			platSpawner.GetComponent<Cycle>().platMove = true;
+			gameStart = true;
+		}
+		else
+		{
+			if(!isJumping)
+			{
+				grounded = false;
+				velocity.y = 0;
+				velocity.y += jumpSpeed;
+				if(velocity.y >= 0)
+				{
+					PlayAnimation("Jump",1f);
+					StartCoroutine(Timer(.1f,"Jump"));
+					isJumping = true;
+				}
+				else
+				{
+					isJumping = true;
+					isDouble = false;
+				}
+			}
+		}
+	}
+	
+	void DoubleJump()
+	{
+		isDouble = true;
+		if(RandomBool())
+			PlayAnimation("Spin",1.2f);
+		else
+			PlayAnimation("Spin2",1.2f);//Change to spin the other way
+		velocity.y = 0;
+		velocity.y += doubleSpeed;
+	}
+	
 	void Movement ()
 	{
 		controller.Move(velocity*Time.deltaTime);//Always moving at current velocity
+		if(velocity.y<-9.8)
+			velocity.y = -9.8f;
+		actualSpeed = controller.velocity;//for debugging
+		if(!isJumping)
+		{
+			if(velocity.y<0)
+			{
+				isJumping = true;
+				isDouble = false;
+			}
+		}
 
 		//Check to see if on platforms or in air
 		if(grounded)
 			OnGround();
 		else
 			InAir();
-		
+
+	}
+	
+	void FallCheck()
+	{
 		if(transform.position.y < -3)//If fell off, restart level #Need to modularize in case levels would let you fall far or go higher up
 		{
 			if(!deathSound)
@@ -126,67 +202,44 @@ public class Player : MonoBehaviour {
 	{
 		isJumping = false;
 		isDouble = true;
-		
 		if(platSpawner.GetComponent<Cycle>().platMove)
 			PlayAnimation("Walk",2.5f);
 		else
 			PlayAnimation("Idle",.7f);
-		
-		if(Input.GetKeyDown(KeyCode.Space)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
-		{
-			if(!gameStart)
-			{
-				platSpawner.GetComponent<Cycle>().platMove = true;
-				gameStart = true;
-			}
-			else
-			{
-				grounded = false;
-				velocity.y = 0;
-				velocity.y += jumpSpeed;
-			}
-		}
 	}
 	
 	void InAir ()//Need to condense this
 	{
-
-		if(!isJumping)
-		{
-			if(isDouble)
-			{
-				if(velocity.y >= 0)
-				{
-					PlayAnimation("Jump",1f);
-					StartCoroutine(Timer(.1f,"Jump"));
-					isJumping = true;
-				}
-				else
-				{
-					isJumping = true;
-					isDouble = false;
-				}
-			}
-		}
-		
 		if(!model.animation["Jump"].enabled && !model.animation["Spin"].enabled && !model.animation["Spin2"].enabled)
-		{
 			PlayAnimation("Fall",.5f);
-		}
 		velocity.y += gravitySpeed*Time.deltaTime;
-		if(!isDouble)
-		{
-			if(Input.GetKeyDown(KeyCode.Space)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
-			{
-				isDouble = true;
-				if(RandomBool())
-					PlayAnimation("Spin",1.2f);
-				else
-					PlayAnimation("Spin2",1.2f);//Change to spin the other way
-				velocity.y = 0;
-				velocity.y += doubleSpeed;
-			}
-		}
+//		if(!isDouble)
+//		{
+//			if(Input.GetKeyDown(KeyCode.Space)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
+//			{
+//				isDouble = true;
+//				if(RandomBool())
+//					PlayAnimation("Spin",1.2f);
+//				else
+//					PlayAnimation("Spin2",1.2f);//Change to spin the other way
+//				velocity.y = 0;
+//				velocity.y += doubleSpeed;
+//			}
+//		}
+		FallCheck();
+		SpinTrail();
+	}
+	
+	void SpinTrail()
+	{
+		if(model.animation["Spin2"].enabled)
+			hand.SetActive(true);
+		else
+			hand.SetActive(false);
+		if(model.animation["Spin"].enabled)
+			hand2.SetActive(true);
+		else
+			hand2.SetActive(false);
 	}
 	
 	void SideCheck ()
