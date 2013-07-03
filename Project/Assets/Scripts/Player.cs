@@ -66,13 +66,19 @@ public class Player : MonoBehaviour {
 	//Object Refs
 		public GameObject gameCamera;
 		public GameObject platSpawner;
+		GameObject holder;//contains deactivated platforms
 		public GameObject soundMaker;
-		public GameObject leftHand;
-		public GameObject rightHand;
-		public TrailRenderer trail;
-		public ParticleSystem fireMove;
-		public ParticleSystem fireStill;
-		GameObject holder;
+	
+		//Double jump effects
+			public GameObject leftHand;
+			public GameObject rightHand;
+			public TrailRenderer trail;
+			public GameObject jetpack;
+		
+		//Environment effects
+			public ParticleSystem fireMove;
+			public ParticleSystem fireStill;
+			
 	
 #endregion
 	
@@ -88,8 +94,8 @@ public class Player : MonoBehaviour {
 	void Update () 
 	{
 		PlayerInput();
-		Movement();
 		SideCheck();
+		Movement();
 		BottomCheck();
 		if(Input.GetKey(KeyCode.R))
 			Application.LoadLevel(Application.loadedLevel);
@@ -206,6 +212,7 @@ public class Player : MonoBehaviour {
 	
 	void OnGround()
 	{
+		jetpack.SetActive(false);
 		isJumping = false;
 		isDouble = true;
 		if(platSpawner.GetComponent<Cycle>().platMove)
@@ -218,6 +225,13 @@ public class Player : MonoBehaviour {
 	{
 		if(!animation["Jump"].enabled && !animation["Spin"].enabled && !animation["Spin2"].enabled)
 			PlayAnimation("Fall",.5f);
+		if(animation["Spin"].enabled || animation["Spin2"].enabled)
+		{
+			jetpack.SetActive(true);
+			jetpack.particleSystem.enableEmission = true;
+		}
+		else
+			jetpack.particleSystem.enableEmission = false;
 		velocity.y += gravitySpeed*Time.deltaTime;
 		FallCheck();
 		SpinTrail();
@@ -257,8 +271,10 @@ public class Player : MonoBehaviour {
 			Debug.DrawRay(playerFront,-transform.up,Color.green,0);//For debug only
 		if(Physics.Raycast(playerTop,transform.forward,.5f,platLayer)||(Physics.Raycast(playerBottom,transform.forward,.5f,platLayer)))
 		{
+			fireMove.enableEmission = false;
 			isDouble = true;
 			platSpawner.GetComponent<Cycle>().platMove = false;
+			fireStill.enableEmission = true;
 		}
 	}
 	
