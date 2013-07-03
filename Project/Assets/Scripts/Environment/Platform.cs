@@ -6,7 +6,7 @@ public class Platform : MonoBehaviour {
 	GameObject spawner;
 	GameObject emptyHolder;
 	GameObject destroyer;
-	GameObject bgDestroyer;
+	//GameObject bgDestroyer;
 	public float platLength;
 	
 	// Use this for initialization
@@ -24,10 +24,10 @@ public class Platform : MonoBehaviour {
 		{
 			if(tag == "Platform")
 				transform.Translate(new Vector3(0,0,-spawner.GetComponent<Cycle>().platMoveSpeed)*Time.deltaTime);//Move at a constant rate
-			if(tag == "Background")
-				transform.Translate(new Vector3(0,0,-spawner.GetComponent<Cycle>().backMoveSpeed)*Time.deltaTime);//Move at a constant rate
+			if(tag == "Decor")
+				transform.Translate(new Vector3(0,0,-spawner.GetComponent<Cycle>().platMoveSpeed)*Time.deltaTime);//Move at a constant rate
 		}
-		if(transform.position.z < destroyer.transform.position.z)
+		if(transform.position.z < destroyer.transform.position.z||(tag == "Decor" && transform.position.y < destroyer.transform.position.y))
 		{
 			//One of these is right...
 				transform.parent = emptyHolder.transform;

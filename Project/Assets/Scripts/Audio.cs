@@ -4,20 +4,16 @@ using System.Collections;
 public class Audio : MonoBehaviour {
 	
 	public AudioClip[] soundFX;
+	public AudioClip[] ambient;
 	public AudioClip[] music;
 	public AudioSource soundFXSource;
+	public AudioSource ambientSource;
 	public AudioSource musicSource;
-	
-	public enum soundTypes
-	{
-		soundFX,
-		music,
-	};
 	
 	// Use this for initialization
 	void Awake () 
 	{
-		PlaySound(0,0,100,true);
+		PlaySound(1,0,100,true);
 	}
 	
 	// Update is called once per frame
@@ -31,6 +27,15 @@ public class Audio : MonoBehaviour {
 		switch(source)
 		{
 			case 1:
+			{
+				ambientSource.clip = ambient[index];
+				ambientSource.volume = volume;
+				ambientSource.Play();
+				ambientSource.loop = loop;
+				break;
+			}
+			
+			case 2:
 			{
 				musicSource.clip = music[index];
 				musicSource.volume = volume;
@@ -56,6 +61,14 @@ public class Audio : MonoBehaviour {
 		switch(source)
 		{
 			case 1:
+			{
+				ambientSource.clip = ambient[index];
+				ambientSource.Play();
+				ambientSource.loop = loop;
+				break;
+			}
+			
+			case 2:
 			{
 				musicSource.clip = music[index];
 				musicSource.Play();

@@ -65,12 +65,13 @@ public class Player : MonoBehaviour {
 	
 	//Object Refs
 		public GameObject gameCamera;
-		public GameObject model;
 		public GameObject platSpawner;
 		public GameObject soundMaker;
 		public GameObject leftHand;
 		public GameObject rightHand;
 		public TrailRenderer trail;
+		public ParticleSystem fireMove;
+		public ParticleSystem fireStill;
 		GameObject holder;
 	
 #endregion
@@ -78,6 +79,7 @@ public class Player : MonoBehaviour {
 	// Use this for initialization
 	void Start() 
 	{
+		fireMove.enableEmission = false;
 		controller = GetComponent<CharacterController>();
 		controller.detectCollisions = false;
 	}
@@ -95,12 +97,12 @@ public class Player : MonoBehaviour {
 	
 	void PlayerInput()
 	{
-		if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began && Input.GetTouch(0).position.x > (Screen.width-(Screen.width/7.7f))&& Input.GetTouch(0).position.y > (Screen.width-(Screen.width/7.7f)))
+		if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began && Input.GetTouch(0).position.x > (Screen.width-(Screen.width/7.7f))&& Input.GetTouch(0).position.y < Screen.height/7)
 		{
 			print ("Pause");
 			//pause the game
 		}
-		if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began && Input.GetTouch(0).position.x < (Screen.width-(Screen.width/7.7f))&& Input.GetTouch(0).position.y < (Screen.width-(Screen.width/7.7f)))
+		if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began && Input.GetTouch(0).position.x < (Screen.width-(Screen.width/7.7f))&& Input.GetTouch(0).position.y > Screen.height/7)
 		{
 			if(grounded)
 				Jump();
@@ -128,6 +130,8 @@ public class Player : MonoBehaviour {
 		if(!gameStart)
 		{
 			platSpawner.GetComponent<Cycle>().platMove = true;
+			fireMove.enableEmission = true;
+			fireStill.enableEmission = false;
 			gameStart = true;
 		}
 		else
@@ -154,6 +158,7 @@ public class Player : MonoBehaviour {
 	
 	void DoubleJump()
 	{
+		soundMaker.GetComponent<Audio>().PlaySound(0,1,100,false);
 		isDouble = true;
 		if(RandomBool())
 			PlayAnimation("Spin",1.2f);
@@ -192,7 +197,7 @@ public class Player : MonoBehaviour {
 		{
 			if(!deathSound)
 			{
-				soundMaker.GetComponent<Audio>().PlaySound(0,1,100,false);
+				soundMaker.GetComponent<Audio>().PlaySound(0,0,100,false);
 				deathSound=true;
 			}
 			gameCamera.GetComponent<Camera>().playerFell = true;
@@ -211,36 +216,27 @@ public class Player : MonoBehaviour {
 	
 	void InAir ()//Need to condense this
 	{
-		if(!model.animation["Jump"].enabled && !model.animation["Spin"].enabled && !model.animation["Spin2"].enabled)
+		if(!animation["Jump"].enabled && !animation["Spin"].enabled && !animation["Spin2"].enabled)
 			PlayAnimation("Fall",.5f);
 		velocity.y += gravitySpeed*Time.deltaTime;
-//		if(!isDouble)
-//		{
-//			if(Input.GetKeyDown(KeyCode.Space)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
-//			{
-//				isDouble = true;
-//				if(RandomBool())
-//					PlayAnimation("Spin",1.2f);
-//				else
-//					PlayAnimation("Spin2",1.2f);//Change to spin the other way
-//				velocity.y = 0;
-//				velocity.y += doubleSpeed;
-//			}
-//		}
 		FallCheck();
 		SpinTrail();
 	}
 	
 	void SpinTrail()
 	{
-		if(model.animation["Spin2"].enabled)
+		if(grounded)
+			trail.renderer.enabled = false;
+		if(animation["Spin2"].enabled)
 		{
+			trail.renderer.enabled = true;
 			trail.transform.parent = leftHand.transform;
 			trail.transform.localPosition = Vector3.zero;
 			trail.startWidth = .15f;
 		}
-		else if(model.animation["Spin"].enabled)
+		else if(animation["Spin"].enabled)
 		{
+			trail.renderer.enabled = true;
 			trail.transform.parent = rightHand.transform;
 			trail.transform.localPosition = Vector3.zero;
 			trail.startWidth = .15f;
@@ -286,8 +282,8 @@ public class Player : MonoBehaviour {
 	
 	void PlayAnimation(string name,float speed)
 	{
-		model.animation[name].speed = speed;
-		model.animation.Play(name);
+		animation[name].speed = speed;
+		animation.Play(name);
 	}
 	
 	IEnumerator Timer(float waitTime,string function)
