@@ -1,0 +1,49 @@
+using UnityEngine;
+using System.Collections;
+
+public class SegmentOrderGenerator : MonoBehaviour {
+	
+	//To use this, attach it to a gameobject
+	//Defaults {15,30,15,7.5,7.5,7.5,5,7.5,15}
+	
+	public int segmentNumber;//Total number of segments you want in the level
+	int nextSegment;
+	public string[] segments;
+	public float[] frequencies;
+	string levelList = "";//String used to print the segment order
+
+	void Start () 
+	{
+		float freqTotal = 0;
+		for(int x=0;x< frequencies.Length; x++)
+			freqTotal += frequencies[x];
+		
+		//For each segment that needs to be created
+		for(int i=0; i<segmentNumber;i++)
+		{
+			//Randomly select which type
+			float next = Random.Range(1,freqTotal);
+			float nextFrequency = 0;//Low bound for each segment
+			float lastFrequency = 0;//High bound for each segment
+			nextSegment = 0;//Segment that is chosen
+			
+			//Check each frequency to see if it matches the rando number
+			for(int j=0; j < frequencies.Length ;j++)
+			{
+				lastFrequency = nextFrequency;
+				nextFrequency = nextFrequency + frequencies[j];
+				if(next > lastFrequency && next < nextFrequency) 
+				{
+					nextSegment = j;
+					break;//End the loop when next segment is decided
+				}
+			}
+			//Format the object name, so it can be copy pasted into the level def easily
+			string segmentName = "\"" + segments[nextSegment]+ "\",";
+			levelList = levelList + " " + segmentName; 
+		}
+		//Add the ending segment to the end of the level
+		levelList = " \"INCLINE_MEDIUM\"," + levelList + " \"ENDING\"";
+		print(levelList);
+	}
+}
